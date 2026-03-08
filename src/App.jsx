@@ -1,335 +1,452 @@
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useState, useEffect } from "react";
+import { motion } from "motion/react";
 
-// ── Palette & Tokens ──────────────────────────────────────────────────────────
+// ── Color Palette ──────────────────────────────────────────────────────────────
 const C = {
   saffron: "#FF6B2B",
   saffronLight: "#FFF0E8",
-  saffronMid: "#FFD5BE",
   green: "#138808",
   greenLight: "#E8F5E9",
   navy: "#1A2B5E",
   navyLight: "#EEF1F9",
   gold: "#F0A500",
   goldLight: "#FFF8E1",
-  white: "#FFFFFF",
-  offWhite: "#F8F7F4",
-  slate: "#6B7280",
-  slateLight: "#F3F4F6",
+  purple: "#7B2FBE",
+  purpleLight: "#F3E8FF",
+  teal: "#0891B2",
+  tealLight: "#E0F2FE",
   red: "#DC2626",
   redLight: "#FEF2F2",
+  slate: "#64748B",
+  white: "#FFFFFF",
+  // Dark mode colors
+  darkBg: "#0F172A",
+  darkCard: "#1E293B",
+  darkBorder: "#334155",
+  darkText: "#E2E8F0",
+  darkAlt: "#1a2744",
 };
 
 // ── Translations ───────────────────────────────────────────────────────────────
 const T = {
   en: {
-    appTitle: "Vidya AI",
-    appSubtitle: "Rural Academic Empowerment Platform",
-    disclaimer: "DEMO ONLY – For AI for Bharat Hackathon. Not official academic advice.",
-    steps: ["Profile", "AI Guidance", "Courses", "Scholarships", "Internships", "Startup", "Roadmap"],
-    profile: {
-      title: "Tell us about yourself",
+    nav: {
+      home: "Home",
+      guidance: "AI Guidance",
+      courses: "Courses",
+      scholarships: "Scholarships",
+      internships: "Internships",
+      startup: "Startup Guide",
+      mentors: "Talk to Mentor",
+    },
+    hero: {
+      badge: "🏆 AI for Bharat Hackathon 2025",
+      title: "Vidya AI",
+      subtitle: "Empowering Rural Students with AI-Powered Academic Guidance",
+      description: "Get personalized study plans, discover scholarships, connect with startups, and build your career — all powered by AI. Completely free for rural Indian students.",
+      cta1: "Get My Free Guidance →",
+      cta2: "Explore Features",
+      stats: "10K+ Students Helped | 50+ Scholarships | 100% Free",
+    },
+    features: {
+      title: "Explore Our Features",
+      subtitle: "Everything a rural student needs to succeed — powered by AI",
+      items: [
+        { icon: "🎯", title: "AI Study Guidance", desc: "Personalized study plans based on your goals", color: C.saffron },
+        { icon: "📚", title: "Free Courses", desc: "Curated courses from NPTEL, Swayam & more", color: C.green },
+        { icon: "🏛️", title: "Scholarships", desc: "Find scholarships you're eligible for", color: C.purple },
+        { icon: "🚀", title: "Startup Internships", desc: "Connect with startups hiring students", color: C.teal },
+        { icon: "💡", title: "Startup Validator", desc: "Validate your startup idea with AI", color: C.gold },
+        { icon: "📄", title: "Resume Builder", desc: "Generate professional resume instantly", color: C.red },
+      ],
+    },
+    guidance: {
+      title: "AI Study Guidance",
       name: "Your Name",
       namePh: "Enter your name",
-      education: "Current Education Level",
-      stream: "Stream / Subject",
-      goal: "Career Goal",
-      interests: "Your Interests (select all that apply)",
       village: "Village / District",
       villagePh: "e.g. Nashik, Amravati",
-      start: "Get My Personalized Guidance →",
-      analyzing: "Analyzing your profile with AI...",
-      ruralContext: "Considering rural India opportunities...",
-    },
-    educLevels: ["Class 8–10", "Class 11–12", "Diploma / ITI", "Undergraduate", "Postgraduate"],
-    streams: ["Science (PCM)", "Science (PCB)", "Commerce", "Arts / Humanities", "Agriculture", "Vocational / ITI"],
-    goals: ["Engineering", "Medicine", "Government Job", "Farming / Agri-tech", "Business / Startup", "Teaching", "Arts / Design", "Not sure yet"],
-    interests: ["Technology", "Agriculture", "Healthcare", "Business", "Creative Arts", "Sports", "Social Work", "Environment"],
-    guidance: {
-      title: "Your AI Study Guidance",
+      education: "Education Level",
+      stream: "Stream / Subject",
+      goal: "Career Goal",
+      interests: "Your Interests",
+      submit: "Generate My Guidance →",
+      generating: "Analyzing your profile...",
       studyPlan: "Personalized Study Plan",
-      strengths: "Your Strengths to Build On",
+      strengths: "Your Strengths",
       focus: "Priority Focus Areas",
-      daily: "Suggested Daily Routine",
+      daily: "Daily Routine",
+      motivational: "Motivational Note",
     },
     courses: {
-      title: "Recommended Free Courses",
-      subtitle: "Curated for your goal & location",
+      title: "Free Courses for You",
+      subtitle: "Learn from India's best platforms — completely free",
       free: "FREE",
       hours: "hrs",
+      cert: "Certificate",
     },
     scholarships: {
       title: "Scholarships You May Qualify For",
-      eligible: "Likely Eligible",
-      check: "Check Eligibility",
-      amount: "Up to ₹",
+      subtitle: "Financial support for your education journey",
+      eligible: "Likely Eligible ✓",
+      check: "Check Eligibility →",
+      amount: "Up to",
     },
     internships: {
-      title: "Startup Internship Matches",
-      subtitle: "Student-to-Startup Connections",
-      apply: "Express Interest",
-      stipend: "Stipend: ₹",
+      title: "Startup Internship Opportunities",
+      subtitle: "Gain real-world experience with growing startups",
+      apply: "Express Interest ✉️",
+      stipend: "Stipend",
       remote: "Remote",
       hybrid: "Hybrid",
     },
-    roadmap: {
-      title: "Your 12-Month Learning Roadmap",
-      month: "Month",
-      milestone: "Milestone",
-      restart: "Start New Profile",
-      generateResume: "📄 Generate My Resume",
+    govtSchemes: {
+      title: "Government Schemes",
+      subtitle: "Apply for relevant government initiatives and get support",
+      apply: "Apply Now →",
+      benefit: "Benefit",
     },
     startup: {
       title: "Startup Idea Validator",
-      ideaLabel: "Your Startup Idea",
-      ideaPlaceholder: "e.g. I want to build an app that connects farmers to buyers directly",
+      subtitle: "Get AI-powered validation for your startup idea",
+      ideaLabel: "Describe Your Startup Idea",
+      ideaPh: "e.g. I want to build an app that connects farmers to buyers directly",
       validate: "Validate My Idea →",
-      validating: "Analyzing your startup idea...",
+      validating: "Analyzing your idea...",
       score: "Validation Score",
       market: "Market Opportunity",
       skills: "Required Skills",
       funding: "Funding Schemes",
-      ip: "IP Protection",
-      business: "Business Registration",
       nextStep: "Next Step",
-      fit: { high: "High Fit", medium: "Medium Fit", low: "Low Fit" },
+      fitHigh: "High Fit",
+      fitMedium: "Medium Fit",
+      fitLow: "Low Fit",
+    },
+    mentors: {
+      title: "Talk to a Mentor",
+      subtitle: "Connect with experienced mentors for personalized guidance",
+      search: "Search by name, subject, or language...",
+      tableHeaders: ["Mentor", "Specialization", "Experience", "Languages", "Rating", "Action"],
+      call: "CALL",
     },
     resume: {
-      title: "Your Resume",
-      generating: "Generating your resume...",
+      title: "Build Your Resume",
+      subtitle: "Generate a professional resume in seconds",
+      warning: "Please fill your profile in AI Guidance section first",
+      generate: "📄 Generate My Resume",
+      generating: "Creating your resume...",
+      copy: "📋 Copy Resume Text",
+      regenerate: "🔄 Regenerate",
+      copied: "Copied!",
       objective: "Career Objective",
       education: "Education",
       skills: "Skills",
       projects: "Suggested Projects to Build",
       certifications: "Certifications to Pursue",
       languages: "Languages",
-      copy: "Copy Resume Text",
-      copied: "Copied!",
     },
-    next: "Next Step →",
-    back: "← Back",
+    footer: {
+      tagline: "Empowering Rural India with AI-Powered Education",
+      disclaimer: "DEMO ONLY – For AI for Bharat Hackathon. Not official academic advice.",
+    },
+    educLevels: ["Class 8–10", "Class 11–12", "Diploma / ITI", "Undergraduate", "Postgraduate"],
+    streams: ["Engineering", "Science (PCM)", "Science (PCB)", "Commerce", "Arts / Humanities", "Agriculture", "Vocational / ITI"],
+    goals: ["Engineering", "Medicine", "Government Job", "Farming / Agri-tech", "Business / Startup", "Teaching", "Arts / Design", "Not sure yet"],
+    interestsList: ["Technology", "Agriculture", "Healthcare", "Business", "Creative Arts", "Sports", "Social Work", "Environment"],
   },
   hi: {
-    appTitle: "विद्या AI",
-    appSubtitle: "ग्रामीण शैक्षणिक सशक्तिकरण मंच",
-    disclaimer: "केवल डेमो – AI for Bharat हैकाथॉन के लिए। यह आधिकारिक शैक्षणिक सलाह नहीं है।",
-    steps: ["प्रोफाइल", "AI मार्गदर्शन", "कोर्स", "छात्रवृत्ति", "इंटर्नशिप", "स्टार्टअप", "रोडमैप"],
-    profile: {
-      title: "अपने बारे में बताएं",
+    nav: {
+      home: "होम",
+      guidance: "AI मार्गदर्शन",
+      courses: "कोर्स",
+      scholarships: "छात्रवृत्ति",
+      internships: "इंटर्नशिप",
+      startup: "स्टार्टअप गाइड",
+      mentors: "मेंटर से बात करें",
+    },
+    hero: {
+      badge: "🏆 AI for Bharat हैकाथॉन 2025",
+      title: "विद्या AI",
+      subtitle: "ग्रामीण छात्रों को AI-संचालित शैक्षणिक मार्गदर्शन से सशक्त बनाना",
+      description: "व्यक्तिगत अध्ययन योजनाएं प्राप्त करें, छात्रवृत्तियां खोजें, स्टार्टअप से जुड़ें और अपना करियर बनाएं — सब AI द्वारा संचालित। ग्रामीण भारतीय छात्रों के लिए पूरी तरह मुफ्त।",
+      cta1: "मुफ्त मार्गदर्शन पाएं →",
+      cta2: "फीचर्स देखें",
+      stats: "10K+ छात्रों की मदद की | 50+ छात्रवृत्तियां | 100% मुफ्त",
+    },
+    features: {
+      title: "हमारे फीचर्स देखें",
+      subtitle: "ग्रामीण छात्र की सफलता के लिए सब कुछ — AI द्वारा संचालित",
+      items: [
+        { icon: "🎯", title: "AI अध्ययन मार्गदर्शन", desc: "आपके लक्ष्यों के आधार पर व्यक्तिगत योजना", color: C.saffron },
+        { icon: "📚", title: "मुफ्त कोर्स", desc: "NPTEL, Swayam और अधिक से चुने गए कोर्स", color: C.green },
+        { icon: "🏛️", title: "छात्रवृत्तियां", desc: "जिनके लिए आप पात्र हैं", color: C.purple },
+        { icon: "🚀", title: "स्टार्टअप इंटर्नशिप", desc: "छात्रों को नियुक्त करने वाले स्टार्टअप", color: C.teal },
+        { icon: "💡", title: "स्टार्टअप सत्यापनकर्ता", desc: "AI से अपने विचार को सत्यापित करें", color: C.gold },
+        { icon: "📄", title: "रिज्यूमे बिल्डर", desc: "तुरंत पेशेवर रिज्यूमे बनाएं", color: C.red },
+      ],
+    },
+    guidance: {
+      title: "AI अध्ययन मार्गदर्शन",
       name: "आपका नाम",
       namePh: "अपना नाम दर्ज करें",
-      education: "वर्तमान शिक्षा स्तर",
-      stream: "विषय / स्ट्रीम",
-      goal: "करियर लक्ष्य",
-      interests: "आपकी रुचियाँ (सभी चुनें जो लागू हों)",
       village: "गाँव / जिला",
       villagePh: "जैसे नागपुर, पुणे",
-      start: "मेरा मार्गदर्शन पाएं →",
-      analyzing: "AI आपकी प्रोफाइल का विश्लेषण कर रही है...",
-      ruralContext: "ग्रामीण भारत के अवसर देख रहे हैं...",
-    },
-    educLevels: ["कक्षा 8–10", "कक्षा 11–12", "डिप्लोमा / आईटीआई", "स्नातक", "स्नातकोत्तर"],
-    streams: ["विज्ञान (PCM)", "विज्ञान (PCB)", "वाणिज्य", "कला / मानविकी", "कृषि", "व्यावसायिक / आईटीआई"],
-    goals: ["इंजीनियरिंग", "चिकित्सा", "सरकारी नौकरी", "कृषि / एग्री-टेक", "व्यवसाय / स्टार्टअप", "शिक्षण", "कला / डिजाइन", "अभी तय नहीं"],
-    interests: ["तकनीक", "कृषि", "स्वास्थ्य", "व्यवसाय", "रचनात्मक कला", "खेल", "सामाजिक कार्य", "पर्यावरण"],
-    guidance: {
-      title: "आपका AI अध्ययन मार्गदर्शन",
+      education: "शिक्षा स्तर",
+      stream: "विषय / स्ट्रीम",
+      goal: "करियर लक्ष्य",
+      interests: "आपकी रुचियाँ",
+      submit: "मेरा मार्गदर्शन बनाएं →",
+      generating: "आपकी प्रोफाइल का विश्लेषण...",
       studyPlan: "व्यक्तिगत अध्ययन योजना",
       strengths: "आपकी शक्तियाँ",
-      focus: "प्राथमिक फोकस क्षेत्र",
-      daily: "दैनिक दिनचर्या सुझाव",
+      focus: "प्राथमिकता फोकस क्षेत्र",
+      daily: "दैनिक दिनचर्या",
+      motivational: "प्रेरक नोट",
     },
     courses: {
-      title: "अनुशंसित मुफ्त कोर्स",
-      subtitle: "आपके लक्ष्य के लिए चुने गए",
+      title: "आपके लिए मुफ्त कोर्स",
+      subtitle: "भारत के सर्वश्रेष्ठ प्लेटफार्मों से सीखें — पूरी तरह मुफ्त",
       free: "मुफ्त",
       hours: "घंटे",
+      cert: "प्रमाणपत्र",
     },
     scholarships: {
       title: "आपके लिए उपयुक्त छात्रवृत्तियाँ",
-      eligible: "संभवतः पात्र",
-      check: "पात्रता जाँचें",
-      amount: "₹ तक",
+      subtitle: "आपकी शिक्षा यात्रा के लिए वित्तीय सहायता",
+      eligible: "संभवतः पात्र ✓",
+      check: "पात्रता जांचें →",
+      amount: "तक",
     },
     internships: {
-      title: "स्टार्टअप इंटर्नशिप मैच",
-      subtitle: "छात्र-स्टार्टअप कनेक्शन",
-      apply: "रुचि दर्ज करें",
-      stipend: "वजीफा: ₹",
+      title: "स्टार्टअप इंटर्नशिप अवसर",
+      subtitle: "बढ़ते स्टार्टअप के साथ वास्तविक अनुभव प्राप्त करें",
+      apply: "रुचि दर्ज करें ✉️",
+      stipend: "वजीफा",
       remote: "दूरस्थ",
       hybrid: "हाइब्रिड",
     },
-    roadmap: {
-      title: "आपका 12 महीने का रोडमैप",
-      month: "महीना",
-      milestone: "मील का पत्थर",
-      restart: "नई प्रोफाइल शुरू करें",
-      generateResume: "📄 मेरा रिज्यूमे बनाएं",
-    },
     startup: {
-      title: "स्टार्टअप विचार सत्यापन",
-      ideaLabel: "आपका स्टार्टअप विचार",
-      ideaPlaceholder: "जैसे मैं एक ऐप बनाना चाहता हूं जो किसानों को खरीदारों से सीधे जोड़े",
+      title: "स्टार्टअप विचार सत्यापनकर्ता",
+      subtitle: "अपने स्टार्टअप विचार के लिए AI-संचालित सत्यापन प्राप्त करें",
+      ideaLabel: "अपना स्टार्टअप विचार बताएं",
+      ideaPh: "जैसे मैं एक ऐप बनाना चाहता हूं जो किसानों को खरीदारों से सीधे जोड़े",
       validate: "मेरे विचार को सत्यापित करें →",
-      validating: "आपके स्टार्टअप विचार का विश्लेषण हो रहा है...",
+      validating: "आपके विचार का विश्लेषण...",
       score: "सत्यापन स्कोर",
       market: "बाजार अवसर",
       skills: "आवश्यक कौशल",
       funding: "फंडिंग योजनाएं",
-      ip: "आईपी सुरक्षा",
-      business: "व्यवसाय पंजीकरण",
       nextStep: "अगला कदम",
-      fit: { high: "उच्च उपयुक्तता", medium: "मध्यम उपयुक्तता", low: "कम उपयुक्तता" },
+      fitHigh: "उच्च उपयुक्तता",
+      fitMedium: "मध्यम उपयुक्तता",
+      fitLow: "कम उपयुक्तता",
+    },
+    mentors: {
+      title: "मेंटर से बात करें",
+      subtitle: "व्यक्तिगत मार्गदर्शन के लिए अनुभवी मेंटर से जुड़ें",
+      search: "नाम, विषय या भाषा से खोजें...",
+      tableHeaders: ["मेंटर", "विशेषज्ञता", "अनुभव", "भाषाएं", "रेटिंग", "कार्रवाई"],
+      call: "कॉल करें",
     },
     resume: {
-      title: "आपका रिज्यूमे",
-      generating: "आपका रिज्यूमे बनाया जा रहा है...",
+      title: "अपना रिज्यूमे बनाएं",
+      subtitle: "सेकंडों में पेशेवर रिज्यूमे बनाएं",
+      warning: "कृपया पहले AI मार्गदर्शन अनुभाग में अपनी प्रोफाइल भरें",
+      generate: "📄 मेरा रिज्यूमे बनाएं",
+      generating: "आपका रिज्यूमे बना रहे हैं...",
+      copy: "📋 रिज्यूमे टेक्स्ट कॉपी करें",
+      regenerate: "🔄 फिर से बनाएं",
+      copied: "कॉपी हो गया!",
       objective: "करियर उद्देश्य",
       education: "शिक्षा",
       skills: "कौशल",
       projects: "बनाने के लिए सुझाए गए प्रोजेक्ट",
       certifications: "प्राप्त करने के लिए प्रमाणपत्र",
       languages: "भाषाएं",
-      copy: "रिज्यूमे टेक्स्ट कॉपी करें",
-      copied: "कॉपी हो गया!",
     },
-    next: "अगला →",
-    back: "← वापस",
+    footer: {
+      tagline: "AI-संचालित शिक्षा से ग्रामीण भारत को सशक्त बनाना",
+      disclaimer: "केवल डेमो – AI for Bharat हैकाथॉन के लिए। आधिकारिक शैक्षणिक सलाह नहीं।",
+    },
+    educLevels: ["कक्षा 8–10", "कक्षा 11–12", "डिप्लोमा / आईटीआई", "स्नातक", "स्नातकोत्तर"],
+    streams: ["इंजीनियरिंग", "विज्ञान (PCM)", "विज्ञान (PCB)", "वाणिज्य", "कला / मानविकी", "कृषि", "व्यावसायिक / आईटीआई"],
+    goals: ["इंजीनियरिंग", "चिकित्सा", "सरकारी नौकरी", "कृषि / एग्री-टेक", "व्यवसाय / स्टार्टअप", "शिक्षण", "कला / डिजाइन", "अभी तय नहीं"],
+    interestsList: ["तकनीक", "कृषि", "स्वास्थ्य", "व्यवसाय", "रचनात्मक कला", "खेल", "सामाजिक कार्य", "पर्यावरण"],
   },
   mr: {
-    appTitle: "विद्या AI",
-    appSubtitle: "ग्रामीण शैक्षणिक सक्षमीकरण व्यासपीठ",
-    disclaimer: "केवल डेमो – AI for Bharat हॅकाथॉनसाठी. अधिकृत शैक्षणिक सल्ला नाही.",
-    steps: ["प्रोफाइल", "AI मार्गदर्शन", "अभ्यासक्रम", "शिष्यवृत्ती", "इंटर्नशिप", "स्टार्टअप", "रोडमॅप"],
-    profile: {
-      title: "तुमच्याबद्दल सांगा",
+    nav: {
+      home: "होम",
+      guidance: "AI मार्गदर्शन",
+      courses: "अभ्यासक्रम",
+      scholarships: "शिष्यवृत्ती",
+      internships: "इंटर्नशिप",
+      startup: "स्टार्टअप गाइड",
+      mentors: "मेंटरशी बोला",
+    },
+    hero: {
+      badge: "🏆 AI for Bharat हॅकाथॉन 2025",
+      title: "विद्या AI",
+      subtitle: "ग्रामीण विद्यार्थ्यांना AI-चालित शैक्षणिक मार्गदर्शनाने सक्षम करणे",
+      description: "वैयक्तिक अभ्यास योजना मिळवा, शिष्यवृत्ती शोधा, स्टार्टअपशी जोडा आणि तुमचे करिअर तयार करा — सर्व AI द्वारे चालित. ग्रामीण भारतीय विद्यार्थ्यांसाठी पूर्णपणे मोफत.",
+      cta1: "मोफत मार्गदर्शन मिळवा →",
+      cta2: "वैशिष्ट्ये पहा",
+      stats: "10K+ विद्यार्थ्यांना मदत केली | 50+ शिष्यवृत्ती | 100% मोफत",
+    },
+    features: {
+      title: "आमची वैशिष्ट्ये पहा",
+      subtitle: "ग्रामीण विद्यार्थ्याच्या यशासाठी सर्व काही — AI द्वारे चालित",
+      items: [
+        { icon: "🎯", title: "AI अभ्यास मार्गदर्शन", desc: "तुमच्या ध्येयांवर आधारित वैयक्तिक योजना", color: C.saffron },
+        { icon: "📚", title: "मोफत अभ्यासक्रम", desc: "NPTEL, Swayam आणि अधिक पासून निवडलेले", color: C.green },
+        { icon: "🏛️", title: "शिष्यवृत्ती", desc: "ज्यासाठी तुम्ही पात्र आहात", color: C.purple },
+        { icon: "🚀", title: "स्टार्टअप इंटर्नशिप", desc: "विद्यार्थ्यांना नियुक्त करणारे स्टार्टअप", color: C.teal },
+        { icon: "💡", title: "स्टार्टअप सत्यापक", desc: "AI सह तुमची कल्पना तपासा", color: C.gold },
+        { icon: "📄", title: "रिझ्युमे बिल्डर", desc: "त्वरित व्यावसायिक रिझ्युमे तयार करा", color: C.red },
+      ],
+    },
+    guidance: {
+      title: "AI अभ्यास मार्गदर्शन",
       name: "तुमचे नाव",
-      namePh: "नाव टाका",
-      education: "सध्याचे शिक्षण स्तर",
-      stream: "विषय / शाखा",
-      goal: "करिअर ध्येय",
-      interests: "तुमच्या आवडी (सर्व निवडा)",
+      namePh: "तुमचे नाव टाका",
       village: "गाव / जिल्हा",
       villagePh: "उदा. नाशिक, अमरावती",
-      start: "माझे मार्गदर्शन मिळवा →",
-      analyzing: "AI तुमची प्रोफाइल तपासत आहे...",
-      ruralContext: "ग्रामीण महाराष्ट्राच्या संधी पाहत आहे...",
-    },
-    educLevels: ["इयत्ता 8–10", "इयत्ता 11–12", "डिप्लोमा / आयटीआय", "पदवी", "पदव्युत्तर"],
-    streams: ["विज्ञान (PCM)", "विज्ञान (PCB)", "वाणिज्य", "कला / मानवता", "शेती", "व्यावसायिक / आयटीआय"],
-    goals: ["अभियांत्रिकी", "वैद्यकीय", "सरकारी नोकरी", "शेती / एग्री-टेक", "व्यवसाय / स्टार्टअप", "शिक्षण", "कला / डिझाइन", "अजून ठरवले नाही"],
-    interests: ["तंत्रज्ञान", "शेती", "आरोग्य", "व्यवसाय", "सृजनशील कला", "खेळ", "सामाजिक कार्य", "पर्यावरण"],
-    guidance: {
-      title: "तुमचे AI अभ्यास मार्गदर्शन",
+      education: "शिक्षण स्तर",
+      stream: "विषय / शाखा",
+      goal: "करिअर ध्येय",
+      interests: "तुमच्या आवडी",
+      submit: "माझे मार्गदर्शन तयार करा →",
+      generating: "तुमच्या प्रोफाइलचे विश्लेषण...",
       studyPlan: "वैयक्तिक अभ्यास योजना",
       strengths: "तुमची बलस्थाने",
       focus: "प्राधान्य फोकस क्षेत्रे",
-      daily: "दैनंदिन दिनचर्या सूचना",
+      daily: "दैनंदिन दिनचर्या",
+      motivational: "प्रेरक नोट",
     },
     courses: {
-      title: "शिफारस केलेले मोफत अभ्यासक्रम",
-      subtitle: "तुमच्या ध्येयासाठी निवडलेले",
+      title: "तुमच्यासाठी मोफत अभ्यासक्रम",
+      subtitle: "भारताच्या सर्वोत्तम प्लॅटफॉर्मवरून शिका — पूर्णपणे मोफत",
       free: "मोफत",
       hours: "तास",
+      cert: "प्रमाणपत्र",
     },
     scholarships: {
       title: "तुम्हाला मिळू शकणाऱ्या शिष्यवृत्ती",
-      eligible: "बहुधा पात्र",
-      check: "पात्रता तपासा",
-      amount: "₹ पर्यंत",
+      subtitle: "तुमच्या शिक्षण प्रवासासाठी आर्थिक सहाय्य",
+      eligible: "बहुधा पात्र ✓",
+      check: "पात्रता तपासा →",
+      amount: "पर्यंत",
     },
     internships: {
-      title: "स्टार्टअप इंटर्नशिप जुळणी",
-      subtitle: "विद्यार्थी-स्टार्टअप कनेक्शन",
-      apply: "स्वारस्य नोंदवा",
-      stipend: "विद्यावेतन: ₹",
+      title: "स्टार्टअप इंटर्नशिप संधी",
+      subtitle: "वाढत्या स्टार्टअपसह वास्तविक अनुभव मिळवा",
+      apply: "स्वारस्य नोंदवा ✉️",
+      stipend: "विद्यावेतन",
       remote: "दूरस्थ",
       hybrid: "हायब्रिड",
     },
-    roadmap: {
-      title: "तुमचा 12 महिन्यांचा रोडमॅप",
-      month: "महिना",
-      milestone: "मैलाचा दगड",
-      restart: "नवीन प्रोफाइल सुरू करा",
-      generateResume: "📄 माझा रिझ्युमे तयार करा",
-    },
     startup: {
-      title: "स्टार्टअप कल्पना तपासणी",
-      ideaLabel: "तुमची स्टार्टअप कल्पना",
-      ideaPlaceholder: "उदा. मी एक अॅप तयार करू इच्छितो जे शेतकऱ्यांना खरेदीदारांशी थेट जोडते",
+      title: "स्टार्टअप कल्पना सत्यापक",
+      subtitle: "तुमच्या स्टार्टअप कल्पनेसाठी AI-चालित सत्यापन मिळवा",
+      ideaLabel: "तुमची स्टार्टअप कल्पना सांगा",
+      ideaPh: "उदा. मी एक अॅप तयार करू इच्छितो जे शेतकऱ्यांना खरेदीदारांशी थेट जोडते",
       validate: "माझी कल्पना तपासा →",
-      validating: "तुमच्या स्टार्टअप कल्पनेचे विश्लेषण करत आहे...",
-      score: "तपासणी स्कोअर",
+      validating: "तुमच्या कल्पनेचे विश्लेषण...",
+      score: "सत्यापन स्कोअर",
       market: "बाजार संधी",
       skills: "आवश्यक कौशल्ये",
       funding: "निधी योजना",
-      ip: "आयपी संरक्षण",
-      business: "व्यवसाय नोंदणी",
       nextStep: "पुढील पाऊल",
-      fit: { high: "उच्च योग्यता", medium: "मध्यम योग्यता", low: "कमी योग्यता" },
+      fitHigh: "उच्च योग्यता",
+      fitMedium: "मध्यम योग्यता",
+      fitLow: "कमी योग्यता",
+    },
+    mentors: {
+      title: "मेंटरशी बोला",
+      subtitle: "वैयक्तिक मार्गदर्शनासाठी अनुभवी मेंटरशी जोडा",
+      search: "नाव, विषय किंवा भाषेनुसार शोधा...",
+      tableHeaders: ["मेंटर", "विशेषज्ञता", "अनुभव", "भाषा", "रेटिंग", "कृती"],
+      call: "कॉल करा",
     },
     resume: {
-      title: "तुमचा रिझ्युमे",
+      title: "तुमचा रिझ्युमे तयार करा",
+      subtitle: "सेकंदात व्यावसायिक रिझ्युमे तयार करा",
+      warning: "कृपया प्रथम AI मार्गदर्शन विभागात तुमची प्रोफाइल भरा",
+      generate: "📄 माझा रिझ्युमे तयार करा",
       generating: "तुमचा रिझ्युमे तयार करत आहे...",
+      copy: "📋 रिझ्युमे मजकूर कॉपी करा",
+      regenerate: "🔄 पुन्हा तयार करा",
+      copied: "कॉपी झाले!",
       objective: "करिअर उद्दिष्ट",
       education: "शिक्षण",
       skills: "कौशल्ये",
       projects: "तयार करण्यासाठी सुचवलेले प्रकल्प",
       certifications: "मिळवण्यासाठी प्रमाणपत्रे",
       languages: "भाषा",
-      copy: "रिझ्युमे मजकूर कॉपी करा",
-      copied: "कॉपी झाले!",
     },
-    next: "पुढे →",
-    back: "← मागे",
+    footer: {
+      tagline: "AI-चालित शिक्षणाने ग्रामीण भारताला सक्षम करणे",
+      disclaimer: "केवळ डेमो – AI for Bharat हॅकाथॉनसाठी. अधिकृत शैक्षणिक सल्ला नाही.",
+    },
+    educLevels: ["इयत्ता 8–10", "इयत्ता 11–12", "डिप्लोमा / आयटीआय", "पदवी", "पदव्युत्तर"],
+    streams: ["अभियांत्रिकी", "विज्ञान (PCM)", "विज्ञान (PCB)", "वाणिज्य", "कला / मानवता", "शेती", "व्यावसायिक / आयटीआय"],
+    goals: ["अभियांत्रिकी", "वैद्यकीय", "सरकारी नोकरी", "शेती / एग्री-टेक", "व्यवसाय / स्टार्टअप", "शिक्षण", "कला / डिझाइन", "अजून ठरवले नाही"],
+    interestsList: ["तंत्रज्ञान", "शेती", "आरोग्य", "व्यवसाय", "सृजनशील कला", "खेळ", "सामाजिक कार्य", "पर्यावरण"],
   },
 };
 
 // ── Static Data ───────────────────────────────────────────────────────────────
 const COURSES = [
-  { title: "NPTEL: Programming in Python", platform: "NPTEL / Swayam", hours: 40, tag: "Technology", cert: true },
-  { title: "Digital Agriculture Fundamentals", platform: "eNAM / ICAR", hours: 20, tag: "Agriculture", cert: true },
-  { title: "Spoken English for Rural Youth", platform: "IGNOU Open", hours: 15, tag: "Communication", cert: false },
-  { title: "Basic Accounting & GST", platform: "Tally Education", hours: 30, tag: "Business", cert: true },
-  { title: "Govt Scheme Awareness Course", platform: "DigiLocker Academy", hours: 10, tag: "Civics", cert: false },
-  { title: "Entrepreneurship for Bharat", platform: "Startup India", hours: 25, tag: "Business", cert: true },
+  { title: "NPTEL: Programming in Python", platform: "NPTEL / Swayam", hours: 40, cert: true, link: "https://onlinecourses.nptel.ac.in/" },
+  { title: "Digital Agriculture Fundamentals", platform: "eNAM / ICAR", hours: 20, cert: true, link: "https://enam.gov.in/web/" },
+  { title: "Spoken English for Rural Youth", platform: "IGNOU Open", hours: 15, cert: false, link: "http://ignou.ac.in/" },
+  { title: "Basic Accounting & GST", platform: "Tally Education", hours: 30, cert: true, link: "https://tallyeducation.com/" },
+  { title: "Entrepreneurship for Bharat", platform: "Startup India", hours: 25, cert: true, link: "https://www.startupindia.gov.in/" },
+  { title: "Govt Scheme Awareness Course", platform: "DigiLocker Academy", hours: 10, cert: false, link: "https://www.digilocker.gov.in/" },
 ];
 
 const SCHOLARSHIPS = [
-  { name: "PM YASASVI Scholarship", amount: "1,25,000", ministry: "Ministry of Social Justice", deadline: "Sep 2025", criteria: "OBC/EBC, income < ₹2.5L" },
-  { name: "NSP – State Merit Scholarship", amount: "36,000", ministry: "National Scholarship Portal", deadline: "Nov 2025", criteria: "Merit + Income based" },
-  { name: "Pragati Scholarship (Girls)", amount: "50,000", ministry: "AICTE", deadline: "Oct 2025", criteria: "Female, Diploma/Degree, 1st year" },
-  { name: "Ishan Uday (NE States)", amount: "54,000", ministry: "UGC", deadline: "Dec 2025", criteria: "NE state domicile, UG student" },
+  { name: "PM YASASVI Scholarship", amount: "1,25,000", ministry: "Ministry of Social Justice", deadline: "Sep 2025", criteria: "OBC/EBC, income < ₹2.5L", color: C.purple, link: "https://yet.nta.ac.in/" },
+  { name: "NSP – State Merit Scholarship", amount: "36,000", ministry: "National Scholarship Portal", deadline: "Nov 2025", criteria: "Merit + Income based", color: C.navy, link: "https://scholarships.gov.in/" },
+  { name: "Pragati Scholarship (Girls)", amount: "50,000", ministry: "AICTE", deadline: "Oct 2025", criteria: "Female, Diploma/Degree, 1st year", color: C.teal, link: "https://www.aicte-india.org/schemes/students-development-schemes" },
+  { name: "Ishan Uday (NE States)", amount: "54,000", ministry: "UGC", deadline: "Dec 2025", criteria: "NE state domicile, UG student", color: C.green, link: "https://scholarships.gov.in/" },
 ];
 
 const INTERNSHIPS = [
-  { startup: "KrishiTech Solutions", role: "Agri-Data Intern", stipend: "5,000", mode: "Remote", skills: ["Excel", "Basic Python"], domain: "Agriculture" },
-  { startup: "RuralMed App", role: "Community Health Intern", stipend: "4,000", mode: "Hybrid", skills: ["Data Entry", "Communication"], domain: "Healthcare" },
-  { startup: "GramUdyog Mart", role: "Digital Marketing Intern", stipend: "6,000", mode: "Remote", skills: ["Social Media", "Canva"], domain: "Business" },
-  { startup: "EduSaathi", role: "Content Intern (Hindi/Marathi)", stipend: "3,500", mode: "Remote", skills: ["Writing", "Research"], domain: "Education" },
+  { startup: "KrishiTech Solutions", role: "Agri-Data Intern", stipend: "5,000", mode: "Remote", skills: ["Excel", "Basic Python"], domain: "Agriculture", link: "https://internship.aicte-india.org/" },
+  { startup: "RuralMed App", role: "Community Health Intern", stipend: "4,000", mode: "Hybrid", skills: ["Data Entry", "Communication"], domain: "Healthcare", link: "https://internship.aicte-india.org/" },
+  { startup: "GramUdyog Mart", role: "Digital Marketing Intern", stipend: "6,000", mode: "Remote", skills: ["Social Media", "Canva"], domain: "Business", link: "https://internship.aicte-india.org/" },
+  { startup: "EduSaathi", role: "Content Intern (Hindi/Marathi)", stipend: "3,500", mode: "Remote", skills: ["Writing", "Research"], domain: "Education", link: "https://internship.aicte-india.org/" },
 ];
 
-const ROADMAP = [
-  { months: "1–2", milestone: "Complete profile & identify skill gaps. Enroll in 1 free NPTEL course." },
-  { months: "3–4", milestone: "Finish first course. Apply for 2 scholarships via NSP portal." },
-  { months: "5–6", milestone: "Start internship application. Practice communication daily (30 min)." },
-  { months: "7–8", milestone: "Mid-year review. Update resume. Connect with startup mentor." },
-  { months: "9–10", milestone: "Complete internship / project. Document learnings for portfolio." },
-  { months: "11–12", milestone: "Apply to next level education / job. Refer a friend to Vidya AI." },
+const GOVT_SCHEMES = [
+  { name: "PM Vishwakarma", benefit: "Toolkit + Loan up to ₹3L", sector: "Skill & Business", deadline: "Ongoing", color: C.saffron, link: "https://pmvishwakarma.gov.in/" },
+  { name: "Ayushman Bharat PM-JAY", benefit: "Up to ₹5L Health Cover", sector: "Healthcare", deadline: "Ongoing", color: C.teal, link: "https://pmjay.gov.in/" },
+  { name: "PMEGP Loan", benefit: "Up to ₹50L Subsidy Loan", sector: "Business", deadline: "Ongoing", color: C.gold, link: "https://www.kviconline.gov.in/pmegpeportal/" },
+  { name: "PM Kisan Samman Nidhi", benefit: "₹6,000/year", sector: "Agriculture", deadline: "Ongoing", color: C.green, link: "https://pmkisan.gov.in/" },
 ];
 
-// ── Gemini AI Call ─────────────────────────────────────────────────────────────
-async function getPersonalizedGuidance(profile) {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      messages: [{
-        role: "user",
-        content: `You are an expert Indian academic counselor helping rural students. A student has this profile:
+const MENTORS = [
+  { name: "Dr. Priya Sharma", location: "Pune", specialization: "Engineering & UPSC", experience: "10+ yrs", languages: ["English", "Hindi", "Marathi"], rating: 4.9 },
+  { name: "Rahul Patil", location: "Nashik", specialization: "Agri-tech Startup", experience: "7+ yrs", languages: ["Marathi", "Hindi"], rating: 4.8 },
+  { name: "Sneha Kulkarni", location: "Nagpur", specialization: "Commerce & Banking", experience: "8+ yrs", languages: ["Hindi", "English"], rating: 4.7 },
+  { name: "Amit Desai", location: "Mumbai", specialization: "Business & Entrepreneurship", experience: "12+ yrs", languages: ["English", "Hindi", "Gujarati"], rating: 4.9 },
+];
 
+// ── API Functions ──────────────────────────────────────────────────────────────
+async function getGuidance(profile) {
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{
+          role: "user",
+          content: `You are an expert Indian academic counselor helping rural students. A student has this profile:
 Name: ${profile.name}
 Education: ${profile.education}
 Stream: ${profile.stream}
@@ -345,21 +462,33 @@ Give personalized study guidance. Return ONLY valid JSON (no markdown):
   "dailyRoutine": ["Morning: specific task (1hr)", "Afternoon: specific task (1hr)", "Evening: specific task (30min)"],
   "motivationalNote": "One encouraging sentence in the context of rural India achieving dreams"
 }`
-      }]
-    })
-  });
-  const data = await response.json();
-  const text = data.content.map(b => b.text || "").join("");
-  const clean = text.replace(/```json|```/g, "").trim();
-  return JSON.parse(clean);
+        }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content.map(b => b.text || "").join("");
+    const clean = text.replace(/```json|```/g, "").trim();
+    return JSON.parse(clean);
+  } catch (e) {
+    console.error(e);
+    return {
+      studyPlan: `As a ${profile.education} student aiming for ${profile.goal}, focus on building strong fundamentals. Use free resources like NPTEL and Swayam daily. Rural students have unique resilience — use that!`,
+      strengths: ["Determination", "Practical thinking", "Community awareness"],
+      focusAreas: ["Build core subject basics first", "Learn one digital skill (Excel / Python)", "Practice spoken English 30 min/day"],
+      dailyRoutine: ["Morning: Study core subjects (2hrs)", "Afternoon: Online course (1hr)", "Evening: Revision + practice (1hr)"],
+      motivationalNote: "Every great Indian success story started from a village. Your journey starts today."
+    };
+  }
 }
 
-// ── Startup Validation API Call ────────────────────────────────────────────────
-async function validateStartupIdea(idea) {
+async function validateStartup(idea) {
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 1500,
@@ -376,8 +505,6 @@ async function validateStartupIdea(idea) {
     { "name": "PMEGP", "amount": "₹25L", "fit": "High", "reason": "one line explanation" },
     { "name": "Stand-up India", "amount": "₹1Cr", "fit": "Low", "reason": "one line explanation" }
   ],
-  "ipProtection": "Patent / Copyright / Trademark — one sentence on which applies",
-  "businessRegistration": "Sole Proprietorship / LLP / Pvt Ltd — one sentence recommendation",
   "nextStep": "single most important action to take this week"
 }`
         }]
@@ -389,30 +516,29 @@ async function validateStartupIdea(idea) {
     return JSON.parse(clean);
   } catch (e) {
     console.error(e);
-    // Fallback data
     return {
       validationScore: 72,
-      marketOpportunity: "India's agricultural sector is rapidly digitizing with government support. Direct farmer-to-buyer platforms can reduce middlemen costs by 20-30% and are eligible for multiple rural innovation schemes.",
+      marketOpportunity: "India's agricultural sector is rapidly digitizing with government support. Direct farmer-to-buyer platforms can reduce middlemen costs by 20-30%.",
       requiredSkills: ["Mobile App Development", "Supply Chain Management", "Digital Marketing", "Farmer Communication"],
       fundingSchemes: [
-        { name: "MUDRA Loan", amount: "₹10L", fit: "High", reason: "Perfect for initial app development and pilot testing in 2-3 villages" },
-        { name: "Startup India", amount: "Tax benefits", fit: "High", reason: "Agri-tech startups get 3-year tax holiday and fast-track patent processing" },
-        { name: "PMEGP", amount: "₹25L", fit: "Medium", reason: "Good for scaling operations but requires manufacturing component" },
-        { name: "Stand-up India", amount: "₹1Cr", fit: "Low", reason: "Better suited for larger infrastructure projects, not early-stage apps" }
+        { name: "MUDRA Loan", amount: "₹10L", fit: "High", reason: "Perfect for initial app development and pilot testing" },
+        { name: "Startup India", amount: "Tax benefits", fit: "High", reason: "Agri-tech startups get 3-year tax holiday" },
+        { name: "PMEGP", amount: "₹25L", fit: "Medium", reason: "Good for scaling but requires manufacturing component" },
+        { name: "Stand-up India", amount: "₹1Cr", fit: "Low", reason: "Better for larger infrastructure projects" }
       ],
-      ipProtection: "Copyright for app code and Trademark for brand name. Patent not needed unless unique algorithm.",
-      businessRegistration: "Start with LLP for liability protection and easier funding. Upgrade to Pvt Ltd when raising VC money.",
-      nextStep: "Interview 20 farmers this week to validate the problem. Record their current selling process and pain points."
+      nextStep: "Interview 20 farmers this week to validate the problem and record their pain points."
     };
   }
 }
 
-// ── Resume Generation API Call ─────────────────────────────────────────────────
-async function generateResume(profile) {
+async function buildResume(profile) {
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 1000,
@@ -438,106 +564,43 @@ Return ONLY valid JSON (no markdown):
     return JSON.parse(clean);
   } catch (e) {
     console.error(e);
-    // Fallback data
     return {
-      objective: `Aspiring ${profile.goal} professional from ${profile.village} seeking opportunities to apply technical skills and contribute to rural development`,
+      objective: `Aspiring ${profile.goal} professional from ${profile.village} seeking opportunities to apply technical skills`,
       education: `${profile.education} - ${profile.stream}`,
       skills: ["Problem Solving", "Communication", "Digital Literacy", "Team Collaboration", "Quick Learning"],
-      projects: [
-        `${profile.goal}-focused project using online resources and local community needs`,
-        `Digital solution addressing a problem in ${profile.village} area`
-      ],
-      certifications: ["NPTEL Online Certification", "Google Digital Skills Certification"],
+      projects: [`${profile.goal}-focused project using online resources`, `Digital solution for ${profile.village} community`],
+      certifications: ["NPTEL Online Certification", "Google Digital Skills"],
       languages: ["Hindi", "English", "Marathi"]
     };
   }
 }
 
-// ── Sub-components ─────────────────────────────────────────────────────────────
-function StepDot({ label, idx, currentIdx }) {
-  const done = currentIdx > idx;
-  const active = currentIdx === idx;
-  return (
-    <div className="flex flex-col items-center">
-      <div style={{
-        width: 32, height: 32, borderRadius: "50%",
-        background: done ? C.green : active ? C.saffron : C.slateLight,
-        color: done || active ? C.white : C.slate,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontWeight: 700, fontSize: 13,
-        boxShadow: active ? `0 0 0 4px ${C.saffronMid}` : "none",
-        transition: "all 0.3s",
-      }}>
-        {done ? "✓" : idx + 1}
-      </div>
-      <span style={{ fontSize: 9, marginTop: 4, color: active ? C.saffron : C.slate, fontWeight: active ? 700 : 400, whiteSpace: "nowrap" }}>
-        {label}
-      </span>
-    </div>
-  );
-}
-
-function Card({ children, style = {} }) {
-  return (
-    <div style={{
-      background: C.white,
-      borderRadius: 20,
-      boxShadow: "0 4px 24px rgba(26,43,94,0.08)",
-      border: `1px solid ${C.navyLight}`,
-      overflow: "hidden",
-      ...style
-    }}>
-      {children}
-    </div>
-  );
-}
-
-function Badge({ text, color = C.saffron, bg = C.saffronLight }) {
-  return (
-    <span style={{ background: bg, color, fontSize: 11, fontWeight: 700, padding: "2px 10px", borderRadius: 20 }}>
-      {text}
-    </span>
-  );
-}
-
-function Btn({ children, onClick, disabled, outline, full, style = {} }) {
-  return (
-    <button onClick={onClick} disabled={disabled} style={{
-      padding: "13px 28px",
-      borderRadius: 14,
-      fontWeight: 700, fontSize: 15,
-      cursor: disabled ? "not-allowed" : "pointer",
-      background: outline ? C.white : disabled ? C.slateLight : C.saffron,
-      color: outline ? C.saffron : disabled ? C.slate : C.white,
-      border: outline ? `2px solid ${C.saffron}` : "none",
-      width: full ? "100%" : "auto",
-      opacity: disabled ? 0.6 : 1,
-      transition: "all 0.2s",
-      boxShadow: !outline && !disabled ? "0 4px 14px rgba(255,107,43,0.3)" : "none",
-      ...style
-    }}>
-      {children}
-    </button>
-  );
-}
-
-// ── Main App ───────────────────────────────────────────────────────────────────
+// ── Main App Component ────────────────────────────────────────────────────────
 export default function VidyaAI() {
   const [lang, setLang] = useState("en");
+  const [isDark, setIsDark] = useState(false);
+  const [activeNav, setActiveNav] = useState("home");
   const t = T[lang];
-  const STEPS = t.steps;
-  const [step, setStep] = useState(0);
-  const [loading, setLoading] = useState(false);
+
+  // Profile state
   const [profile, setProfile] = useState({
-    name: "", education: "", stream: "", goal: "", interests: [], village: ""
+    name: "", village: "", education: "", stream: "", goal: "", interests: []
   });
-  const [aiResult, setAiResult] = useState(null);
+  const [guidanceResult, setGuidanceResult] = useState(null);
+  const [loadingGuidance, setLoadingGuidance] = useState(false);
+
+  // Startup state
   const [startupIdea, setStartupIdea] = useState("");
   const [startupResult, setStartupResult] = useState(null);
-  const [resumeData, setResumeData] = useState(null);
   const [loadingStartup, setLoadingStartup] = useState(false);
+
+  // Resume state
+  const [resumeData, setResumeData] = useState(null);
   const [loadingResume, setLoadingResume] = useState(false);
   const [copiedResume, setCopiedResume] = useState(false);
+
+  // Mentor search
+  const [mentorSearch, setMentorSearch] = useState("");
 
   const toggleInterest = (item) => {
     setProfile(p => ({
@@ -546,35 +609,24 @@ export default function VidyaAI() {
     }));
   };
 
-  const handleStart = async () => {
-    setLoading(true);
-    setStep(1);
+  const handleGenerateGuidance = async () => {
+    if (!profile.name || !profile.education || !profile.stream || !profile.goal) return;
+    setLoadingGuidance(true);
     try {
-      const result = await getPersonalizedGuidance(profile);
-      setAiResult(result);
-      setStep(2);
+      const result = await getGuidance(profile);
+      setGuidanceResult(result);
     } catch (e) {
       console.error(e);
-      setAiResult({
-        studyPlan: `As a ${profile.education} student aiming for ${profile.goal}, focus on building strong fundamentals. Use free resources like NPTEL and Swayam daily. Rural students have unique resilience — use that!`,
-        strengths: ["Determination", "Practical thinking", "Community awareness"],
-        focusAreas: ["Build core subject basics first", "Learn one digital skill (Excel / Python)", "Practice spoken English 30 min/day"],
-        dailyRoutine: ["Morning: Study core subjects (2hrs)", "Afternoon: Online course (1hr)", "Evening: Revision + practice (1hr)"],
-        motivationalNote: "Every great Indian success story started from a village. Your journey starts today."
-      });
-      setStep(2);
     } finally {
-      setLoading(false);
+      setLoadingGuidance(false);
     }
   };
-
-  const canStart = profile.name && profile.education && profile.stream && profile.goal;
 
   const handleValidateStartup = async () => {
     if (!startupIdea.trim()) return;
     setLoadingStartup(true);
     try {
-      const result = await validateStartupIdea(startupIdea);
+      const result = await validateStartup(startupIdea);
       setStartupResult(result);
     } catch (e) {
       console.error(e);
@@ -584,9 +636,10 @@ export default function VidyaAI() {
   };
 
   const handleGenerateResume = async () => {
+    if (!profile.name || !profile.education) return;
     setLoadingResume(true);
     try {
-      const result = await generateResume(profile);
+      const result = await buildResume(profile);
       setResumeData(result);
     } catch (e) {
       console.error(e);
@@ -595,644 +648,953 @@ export default function VidyaAI() {
     }
   };
 
-  const copyResumeToClipboard = () => {
+  const copyResumeText = () => {
     if (!resumeData) return;
-    const resumeText = `${profile.name}
-${profile.village}
-${profile.goal}
-
-CAREER OBJECTIVE
-${resumeData.objective}
-
-EDUCATION
-${resumeData.education}
-
-SKILLS
-${resumeData.skills.join(", ")}
-
-SUGGESTED PROJECTS
-${resumeData.projects.map((p, i) => `${i + 1}. ${p}`).join("\n")}
-
-CERTIFICATIONS TO PURSUE
-${resumeData.certifications.map((c, i) => `${i + 1}. ${c}`).join("\n")}
-
-LANGUAGES
-${resumeData.languages.join(", ")}`;
-    
-    navigator.clipboard.writeText(resumeText);
+    const text = `${profile.name}\n${profile.village}\n${profile.goal}\n\nCAREER OBJECTIVE\n${resumeData.objective}\n\nEDUCATION\n${resumeData.education}\n\nSKILLS\n${resumeData.skills.join(", ")}\n\nSUGGESTED PROJECTS\n${resumeData.projects.map((p, i) => `${i + 1}. ${p}`).join("\n")}\n\nCERTIFICATIONS TO PURSUE\n${resumeData.certifications.map((c, i) => `${i + 1}. ${c}`).join("\n")}\n\nLANGUAGES\n${resumeData.languages.join(", ")}`;
+    navigator.clipboard.writeText(text);
     setCopiedResume(true);
     setTimeout(() => setCopiedResume(false), 2000);
   };
 
+  const filteredMentors = MENTORS.filter(m =>
+    m.name.toLowerCase().includes(mentorSearch.toLowerCase()) ||
+    m.specialization.toLowerCase().includes(mentorSearch.toLowerCase()) ||
+    m.languages.some(l => l.toLowerCase().includes(mentorSearch.toLowerCase()))
+  );
+
+  // Theme colors
+  const bg = isDark ? C.darkBg : "#F8F9FA";
+  const cardBg = isDark ? C.darkCard : C.white;
+  const textColor = isDark ? C.darkText : "#1F2937";
+  const borderColor = isDark ? C.darkBorder : "#E5E7EB";
+  const navBg = isDark ? C.darkBg : C.white;
+  const sectionBg = isDark ? C.darkBg : "#FFFFFF";
+  const altBg = isDark ? C.darkAlt : "#F8F9FA";
+
   return (
-    <div style={{ minHeight: "100vh", background: C.offWhite, fontFamily: "'Noto Sans', 'Hind', sans-serif", paddingBottom: 80 }}>
+    <div style={{ minHeight: "100vh", background: bg, fontFamily: "'Noto Sans', sans-serif", transition: "background 0.3s, color 0.3s" }}>
       {/* Google Fonts */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;900&family=Hind:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&family=Noto+Sans:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        input, select, textarea { font-family: inherit; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: ${C.saffronMid}; border-radius: 2px; }
+        html { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: ${isDark ? C.darkBg : "#F1F5F9"}; }
+        ::-webkit-scrollbar-thumb { background: ${C.saffron}; border-radius: 4px; }
       `}</style>
 
-      {/* ── Header ── */}
-      <header style={{
-        background: C.white,
-        borderBottom: `3px solid ${C.saffron}`,
-        position: "sticky", top: 0, zIndex: 50,
-        padding: "12px 20px",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        boxShadow: "0 2px 16px rgba(255,107,43,0.1)"
+      {/* ── NAVBAR ── */}
+      <nav style={{
+        position: "sticky", top: 0, zIndex: 100,
+        background: navBg, borderBottom: `1px solid ${borderColor}`,
+        padding: "16px 0", transition: "background 0.3s"
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{
-            width: 40, height: 40, borderRadius: 12,
-            background: `linear-gradient(135deg, ${C.saffron}, ${C.gold})`,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 20, boxShadow: "0 4px 12px rgba(255,107,43,0.3)"
-          }}>
-            🎓
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          {/* Logo */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ fontSize: 32 }}>🎓</div>
+            <span style={{ fontFamily: "'Baloo 2', cursive", fontSize: 24, fontWeight: 800, color: textColor }}>Vidya AI</span>
           </div>
-          <div>
-            <div style={{ fontWeight: 900, fontSize: 18, color: C.navy, letterSpacing: -0.5 }}>{t.appTitle}</div>
-            <div style={{ fontSize: 10, color: C.slate }}>{t.appSubtitle}</div>
+
+          {/* Nav Links */}
+          <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
+            {[
+              ["home", t.nav.home, "#"],
+              ["guidance", t.nav.guidance, "#guidance"],
+              ["courses", t.nav.courses, "#courses"],
+              ["scholarships", t.nav.scholarships, "#scholarships"],
+              ["internships", t.nav.internships, "#internships"],
+              ["startup", t.nav.startup, "#startup"],
+              ["mentors", t.nav.mentors, "#mentors"],
+            ].map(([key, label, href]) => (
+              <a key={key} href={href} onClick={() => setActiveNav(key)} style={{
+                fontSize: 15, fontWeight: 600, color: activeNav === key ? C.saffron : textColor,
+                textDecoration: "none", transition: "color 0.2s",
+                borderBottom: activeNav === key ? `2px solid ${C.saffron}` : "none",
+                paddingBottom: 4
+              }}>
+                {label}
+              </a>
+            ))}
           </div>
-        </div>
-        <div style={{ display: "flex", gap: 6 }}>
-          {["en", "hi", "mr"].map(l => (
-            <button key={l} onClick={() => setLang(l)} style={{
-              padding: "5px 12px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer",
-              background: lang === l ? C.navy : C.navyLight,
-              color: lang === l ? C.white : C.navy,
-              border: "none", transition: "all 0.2s"
+
+          {/* Right Controls */}
+          <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+            {/* Dark Mode Toggle */}
+            <button onClick={() => setIsDark(!isDark)} style={{
+              background: "none", border: "none", cursor: "pointer", fontSize: 20, padding: 8
             }}>
-              {l === "en" ? "EN" : l === "hi" ? "हिं" : "म"}
+              {isDark ? "☀️" : "🌙"}
             </button>
-          ))}
-        </div>
-      </header>
 
-      {/* ── Progress Steps ── */}
-      <div style={{ background: C.white, padding: "20px 16px 28px", borderBottom: `1px solid ${C.navyLight}`, overflowX: "auto" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0, minWidth: "max-content", margin: "0 auto" }}>
-          {STEPS.map((s, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center" }}>
-              <StepDot label={s} idx={i} currentIdx={step === 0 ? 0 : step === 1 ? 1 : step} />
-              {i < STEPS.length - 1 && (
-                <div style={{ width: 28, height: 2, background: step > i ? C.green : C.slateLight, margin: "0 2px", marginBottom: 16, transition: "background 0.3s" }} />
-              )}
+            {/* Language Toggle */}
+            <div style={{ display: "flex", gap: 8 }}>
+              {[["en", "EN"], ["hi", "हिं"], ["mr", "म"]].map(([code, label]) => (
+                <button key={code} onClick={() => setLang(code)} style={{
+                  padding: "6px 12px", borderRadius: 6, fontSize: 13, fontWeight: 700,
+                  background: lang === code ? C.saffron : "transparent",
+                  color: lang === code ? C.white : textColor,
+                  border: `1px solid ${lang === code ? C.saffron : borderColor}`,
+                  cursor: "pointer", transition: "all 0.2s"
+                }}>
+                  {label}
+                </button>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
-      </div>
+      </nav>
 
-      <main style={{ maxWidth: 640, margin: "0 auto", padding: "24px 16px" }}>
-        <AnimatePresence mode="wait">
-          {/* ── Step 0: Profile ── */}
-          {step === 0 && (
-            <motion.div key="profile" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
-              <Card>
-                <div style={{ padding: "20px 24px", background: `linear-gradient(135deg, ${C.navy}, #2A4080)`, color: C.white }}>
-                  <h2 style={{ fontSize: 20, fontWeight: 800 }}>✏️ {t.profile.title}</h2>
-                </div>
-                <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 18 }}>
-                  <div>
-                    <label style={lblStyle}>{t.profile.name}</label>
-                    <input value={profile.name} onChange={e => setProfile({ ...profile, name: e.target.value })}
-                      placeholder={t.profile.namePh} style={inputStyle} />
-                  </div>
-                  <div>
-                    <label style={lblStyle}>{t.profile.village}</label>
-                    <input value={profile.village} onChange={e => setProfile({ ...profile, village: e.target.value })}
-                      placeholder={t.profile.villagePh} style={inputStyle} />
-                  </div>
-                  <div>
-                    <label style={lblStyle}>{t.profile.education}</label>
-                    <select value={profile.education} onChange={e => setProfile({ ...profile, education: e.target.value })} style={inputStyle}>
-                      <option value="">-- Select --</option>
-                      {t.educLevels.map(l => <option key={l}>{l}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label style={lblStyle}>{t.profile.stream}</label>
-                    <select value={profile.stream} onChange={e => setProfile({ ...profile, stream: e.target.value })} style={inputStyle}>
-                      <option value="">-- Select --</option>
-                      {t.streams.map(s => <option key={s}>{s}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label style={lblStyle}>{t.profile.goal}</label>
-                    <select value={profile.goal} onChange={e => setProfile({ ...profile, goal: e.target.value })} style={inputStyle}>
-                      <option value="">-- Select --</option>
-                      {t.goals.map(g => <option key={g}>{g}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label style={lblStyle}>{t.profile.interests}</label>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
-                      {t.interests.map(item => {
-                        const sel = profile.interests.includes(item);
-                        return (
-                          <button key={item} onClick={() => toggleInterest(item)} style={{
-                            padding: "7px 14px", borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: "pointer",
-                            background: sel ? C.saffron : C.saffronLight,
-                            color: sel ? C.white : C.saffron,
-                            border: `2px solid ${sel ? C.saffron : C.saffronMid}`,
-                            transition: "all 0.15s"
-                          }}>
-                            {item}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  <Btn onClick={handleStart} disabled={!canStart} full>{t.profile.start}</Btn>
-                </div>
-              </Card>
-            </motion.div>
-          )}
+      {/* ── HERO SECTION ── */}
+      <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} style={{
+        background: "linear-gradient(135deg, #0F2347, #1A3A6B)",
+        padding: "80px 24px", position: "relative", overflow: "hidden"
+      }}>
+        {/* Decorative circles */}
+        <div style={{ position: "absolute", top: -50, right: -50, width: 300, height: 300, borderRadius: "50%", background: "rgba(255,107,43,0.1)", filter: "blur(60px)" }} />
+        <div style={{ position: "absolute", bottom: -100, left: -100, width: 400, height: 400, borderRadius: "50%", background: "rgba(19,136,8,0.1)", filter: "blur(80px)" }} />
 
-          {/* ── Step 1: Loading ── */}
-          {step === 1 && (
-            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "60px 20px", gap: 24 }}>
-              <div style={{ position: "relative", width: 96, height: 96 }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center", position: "relative", zIndex: 1 }}>
+          {/* Left Side */}
+          <div>
+            <div style={{
+              display: "inline-block", background: "rgba(255,107,43,0.2)", color: C.saffron,
+              padding: "6px 16px", borderRadius: 20, fontSize: 13, fontWeight: 700, marginBottom: 24
+            }}>
+              {t.hero.badge}
+            </div>
+            <h1 style={{
+              fontFamily: "'Baloo 2', cursive", fontSize: 60, fontWeight: 900,
+              color: C.white, marginBottom: 16, lineHeight: 1.1
+            }}>
+              {t.hero.title}
+            </h1>
+            <p style={{ fontSize: 22, color: "#94A3B8", marginBottom: 12, fontWeight: 600 }}>
+              {t.hero.subtitle}
+            </p>
+            <p style={{ fontSize: 16, color: "#CBD5E1", marginBottom: 32, lineHeight: 1.7 }}>
+              {t.hero.description}
+            </p>
+            <div style={{ display: "flex", gap: 16, marginBottom: 40 }}>
+              <a href="#guidance" style={{
+                padding: "14px 32px", borderRadius: 12, fontSize: 16, fontWeight: 700,
+                background: C.saffron, color: C.white, textDecoration: "none",
+                boxShadow: "0 4px 20px rgba(255,107,43,0.4)", transition: "transform 0.2s"
+              }} onMouseOver={e => e.target.style.transform = "translateY(-2px)"}
+                onMouseOut={e => e.target.style.transform = "translateY(0)"}>
+                {t.hero.cta1}
+              </a>
+              <a href="#features" style={{
+                padding: "14px 32px", borderRadius: 12, fontSize: 16, fontWeight: 700,
+                background: "transparent", color: C.white, textDecoration: "none",
+                border: `2px solid ${C.white}`, transition: "all 0.2s"
+              }} onMouseOver={e => { e.target.style.background = C.white; e.target.style.color = C.navy; }}
+                onMouseOut={e => { e.target.style.background = "transparent"; e.target.style.color = C.white; }}>
+                {t.hero.cta2}
+              </a>
+            </div>
+            <div style={{ fontSize: 14, color: "#94A3B8", fontWeight: 600 }}>
+              {t.hero.stats}
+            </div>
+          </div>
+
+          {/* Right Side */}
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <div style={{
+              fontSize: 200, filter: "drop-shadow(0 0 60px rgba(255,107,43,0.5))",
+              animation: "float 3s ease-in-out infinite"
+            }}>
+              🎓
+            </div>
+          </div>
+        </div>
+
+        <style>{`
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+          }
+        `}</style>
+      </motion.section>
+
+      {/* ── FEATURES SECTION ── */}
+      <section id="features" style={{ padding: "80px 24px", background: sectionBg, transition: "background 0.3s" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center" }}>
+          <h2 style={{ fontFamily: "'Baloo 2', cursive", fontSize: 42, fontWeight: 800, color: textColor, marginBottom: 12 }}>
+            {t.features.title}
+          </h2>
+          <p style={{ fontSize: 18, color: C.slate, marginBottom: 60 }}>
+            {t.features.subtitle}
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 32 }}>
+            {t.features.items.map((item, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }} viewport={{ once: true }}
+                style={{
+                  background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16,
+                  padding: 32, textAlign: "left", cursor: "pointer", transition: "all 0.3s"
+                }}
+                onMouseOver={e => e.currentTarget.style.transform = "translateY(-4px)"}
+                onMouseOut={e => e.currentTarget.style.transform = "translateY(0)"}>
                 <div style={{
-                  position: "absolute", inset: 0, borderRadius: "50%",
-                  border: `4px solid ${C.saffronLight}`,
-                  borderTopColor: C.saffron,
-                  animation: "spin 1s linear infinite"
-                }} />
-                <div style={{ position: "absolute", inset: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32 }}>
-                  🎓
+                  width: 64, height: 64, borderRadius: 12, background: `${item.color}15`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 32, marginBottom: 20
+                }}>
+                  {item.icon}
+                </div>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: textColor, marginBottom: 12 }}>
+                  {item.title}
+                </h3>
+                <p style={{ fontSize: 15, color: C.slate, marginBottom: 16, lineHeight: 1.6 }}>
+                  {item.desc}
+                </p>
+                <a href="#" style={{ fontSize: 14, fontWeight: 700, color: item.color, textDecoration: "none" }}>
+                  Learn more →
+                </a>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── AI GUIDANCE SECTION ── */}
+      <section id="guidance" style={{ padding: "80px 24px", background: altBg, transition: "background 0.3s" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <h2 style={{ fontFamily: "'Baloo 2', cursive", fontSize: 42, fontWeight: 800, color: textColor, marginBottom: 12, textAlign: "center" }}>
+            {t.guidance.title}
+          </h2>
+          <p style={{ fontSize: 18, color: C.slate, marginBottom: 60, textAlign: "center" }}>
+            Get personalized study guidance powered by AI
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
+            {/* Left: Form */}
+            <div style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: 32 }}>
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: C.slate, marginBottom: 8 }}>{t.guidance.name}</label>
+                <input value={profile.name} onChange={e => setProfile({ ...profile, name: e.target.value })}
+                  placeholder={t.guidance.namePh}
+                  style={{ width: "100%", padding: "12px 16px", borderRadius: 8, border: `1px solid ${borderColor}`, fontSize: 15, background: isDark ? C.darkCard : C.white, color: textColor }} />
+              </div>
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: C.slate, marginBottom: 8 }}>{t.guidance.village}</label>
+                <input value={profile.village} onChange={e => setProfile({ ...profile, village: e.target.value })}
+                  placeholder={t.guidance.villagePh}
+                  style={{ width: "100%", padding: "12px 16px", borderRadius: 8, border: `1px solid ${borderColor}`, fontSize: 15, background: isDark ? C.darkCard : C.white, color: textColor }} />
+              </div>
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: C.slate, marginBottom: 8 }}>{t.guidance.education}</label>
+                <select value={profile.education} onChange={e => setProfile({ ...profile, education: e.target.value })}
+                  style={{ width: "100%", padding: "12px 16px", borderRadius: 8, border: `1px solid ${borderColor}`, fontSize: 15, background: isDark ? C.darkCard : C.white, color: textColor }}>
+                  <option value="">-- Select --</option>
+                  {t.educLevels.map(l => <option key={l}>{l}</option>)}
+                </select>
+              </div>
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: C.slate, marginBottom: 8 }}>{t.guidance.stream}</label>
+                <select value={profile.stream} onChange={e => setProfile({ ...profile, stream: e.target.value })}
+                  style={{ width: "100%", padding: "12px 16px", borderRadius: 8, border: `1px solid ${borderColor}`, fontSize: 15, background: isDark ? C.darkCard : C.white, color: textColor }}>
+                  <option value="">-- Select --</option>
+                  {t.streams.map(s => <option key={s}>{s}</option>)}
+                </select>
+              </div>
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: C.slate, marginBottom: 8 }}>{t.guidance.goal}</label>
+                <select value={profile.goal} onChange={e => setProfile({ ...profile, goal: e.target.value })}
+                  style={{ width: "100%", padding: "12px 16px", borderRadius: 8, border: `1px solid ${borderColor}`, fontSize: 15, background: isDark ? C.darkCard : C.white, color: textColor }}>
+                  <option value="">-- Select --</option>
+                  {t.goals.map(g => <option key={g}>{g}</option>)}
+                </select>
+              </div>
+              <div style={{ marginBottom: 24 }}>
+                <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: C.slate, marginBottom: 12 }}>{t.guidance.interests}</label>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {t.interestsList.map(item => {
+                    const sel = profile.interests.includes(item);
+                    return (
+                      <button key={item} onClick={() => toggleInterest(item)} style={{
+                        padding: "8px 16px", borderRadius: 20, fontSize: 13, fontWeight: 600,
+                        background: sel ? C.saffron : "transparent",
+                        color: sel ? C.white : textColor,
+                        border: `2px solid ${sel ? C.saffron : borderColor}`,
+                        cursor: "pointer", transition: "all 0.2s"
+                      }}>
+                        {item}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-              <p style={{ fontSize: 20, fontWeight: 700, color: C.navy }}>{t.profile.analyzing}</p>
-              <p style={{ fontSize: 14, color: C.slate }}>{t.profile.ruralContext}</p>
-              <style>{`@keyframes spin { to { transform: rotate(360deg); }}`}</style>
-            </motion.div>
-          )}
+              <button onClick={handleGenerateGuidance}
+                disabled={!profile.name || !profile.education || !profile.stream || !profile.goal || loadingGuidance}
+                style={{
+                  width: "100%", padding: "14px", borderRadius: 10, fontSize: 16, fontWeight: 700,
+                  background: C.saffron, color: C.white, border: "none", cursor: "pointer",
+                  opacity: (!profile.name || !profile.education || !profile.stream || !profile.goal || loadingGuidance) ? 0.5 : 1,
+                  transition: "all 0.2s"
+                }}>
+                {loadingGuidance ? t.guidance.generating : t.guidance.submit}
+              </button>
+            </div>
 
-          {/* ── Step 2: AI Guidance ── */}
-          {step === 2 && aiResult && (
-            <motion.div key="guidance" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <Card>
-                <div style={{ padding: "18px 22px", background: `linear-gradient(135deg, ${C.saffron}, ${C.gold})`, color: C.white }}>
-                  <h2 style={{ fontSize: 18, fontWeight: 800 }}>✨ {t.guidance.title}</h2>
-                  <p style={{ fontSize: 13, opacity: 0.9, marginTop: 4 }}>Hi {profile.name}! Here's your personal plan.</p>
+            {/* Right: Result */}
+            <div>
+              {!guidanceResult ? (
+                <div style={{
+                  background: cardBg, border: `2px dashed ${borderColor}`, borderRadius: 16,
+                  padding: 60, textAlign: "center", minHeight: 400, display: "flex",
+                  alignItems: "center", justifyContent: "center"
+                }}>
+                  <div>
+                    <div style={{ fontSize: 64, marginBottom: 16 }}>🎯</div>
+                    <p style={{ fontSize: 16, color: C.slate }}>Your personalized guidance will appear here</p>
+                  </div>
                 </div>
-                <div style={{ padding: 22, display: "flex", flexDirection: "column", gap: 20 }}>
-                  <div style={{ padding: 16, background: C.navyLight, borderRadius: 14, borderLeft: `4px solid ${C.navy}` }}>
-                    <h3 style={{ fontSize: 12, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                  {/* Study Plan */}
+                  <div style={{
+                    background: `linear-gradient(135deg, ${C.saffron}, ${C.gold})`,
+                    borderRadius: 16, padding: 24, color: C.white
+                  }}>
+                    <h3 style={{ fontSize: 14, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>
                       {t.guidance.studyPlan}
                     </h3>
-                    <p style={{ fontSize: 14, color: "#2D3748", lineHeight: 1.7 }}>{aiResult.studyPlan}</p>
+                    <p style={{ fontSize: 15, lineHeight: 1.7 }}>{guidanceResult.studyPlan}</p>
                   </div>
-                  <div>
-                    <h3 style={{ fontSize: 12, fontWeight: 700, color: C.slate, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+
+                  {/* Strengths */}
+                  <div style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: 24 }}>
+                    <h3 style={{ fontSize: 14, fontWeight: 700, color: textColor, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>
                       {t.guidance.strengths}
                     </h3>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                      {aiResult.strengths.map((s, i) => <Badge key={i} text={`💪 ${s}`} />)}
+                      {guidanceResult.strengths.map((s, i) => (
+                        <span key={i} style={{
+                          background: C.saffronLight, color: C.saffron, padding: "6px 14px",
+                          borderRadius: 20, fontSize: 13, fontWeight: 600
+                        }}>
+                          💪 {s}
+                        </span>
+                      ))}
                     </div>
                   </div>
-                  <div>
-                    <h3 style={{ fontSize: 12, fontWeight: 700, color: C.slate, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+
+                  {/* Focus Areas */}
+                  <div style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: 24 }}>
+                    <h3 style={{ fontSize: 14, fontWeight: 700, color: textColor, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>
                       {t.guidance.focus}
                     </h3>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                      {aiResult.focusAreas.map((f, i) => (
-                        <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 14px", background: C.greenLight, borderRadius: 12 }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      {guidanceResult.focusAreas.map((f, i) => (
+                        <div key={i} style={{
+                          background: C.greenLight, padding: "12px 16px", borderRadius: 10,
+                          display: "flex", gap: 12, alignItems: "flex-start"
+                        }}>
                           <span style={{ color: C.green, fontWeight: 800, fontSize: 16 }}>→</span>
                           <span style={{ fontSize: 14, color: "#1a3a1a" }}>{f}</span>
                         </div>
                       ))}
                     </div>
                   </div>
-                  <div>
-                    <h3 style={{ fontSize: 12, fontWeight: 700, color: C.slate, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+
+                  {/* Daily Routine */}
+                  <div style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: 24 }}>
+                    <h3 style={{ fontSize: 14, fontWeight: 700, color: textColor, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>
                       {t.guidance.daily}
                     </h3>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                      {aiResult.dailyRoutine.map((r, i) => (
-                        <div key={i} style={{ display: "flex", gap: 10, padding: "10px 14px", background: C.goldLight, borderRadius: 12, alignItems: "center" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      {guidanceResult.dailyRoutine.map((r, i) => (
+                        <div key={i} style={{
+                          background: C.goldLight, padding: "12px 16px", borderRadius: 10,
+                          display: "flex", gap: 12, alignItems: "center"
+                        }}>
                           <span style={{ fontSize: 16 }}>{["🌅", "🌞", "🌙"][i] || "📌"}</span>
-                          <span style={{ fontSize: 13, color: "#5a3e00" }}>{r}</span>
+                          <span style={{ fontSize: 14, color: "#5a3e00" }}>{r}</span>
                         </div>
                       ))}
                     </div>
                   </div>
-                  {aiResult.motivationalNote && (
-                    <div style={{ padding: 16, background: C.navy, borderRadius: 14, textAlign: "center" }}>
-                      <p style={{ fontSize: 14, color: C.gold, fontWeight: 600, fontStyle: "italic" }}>
-                        "{aiResult.motivationalNote}"
+
+                  {/* Motivational Note */}
+                  {guidanceResult.motivationalNote && (
+                    <div style={{
+                      background: C.navy, borderRadius: 16, padding: 24, textAlign: "center"
+                    }}>
+                      <p style={{ fontSize: 15, color: C.gold, fontWeight: 600, fontStyle: "italic" }}>
+                        "{guidanceResult.motivationalNote}"
                       </p>
                     </div>
                   )}
                 </div>
-              </Card>
-              <div style={{ display: "flex", gap: 12 }}>
-                <Btn outline onClick={() => setStep(0)}>{t.back}</Btn>
-                <Btn onClick={() => setStep(3)} full>{t.next}</Btn>
-              </div>
-            </motion.div>
-          )}
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
 
-          {/* ── Step 3: Courses ── */}
-          {step === 3 && (
-            <motion.div key="courses" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <Card>
-                <div style={{ padding: "18px 22px", background: `linear-gradient(135deg, ${C.green}, #0a5a06)`, color: C.white }}>
-                  <h2 style={{ fontSize: 18, fontWeight: 800 }}>📚 {t.courses.title}</h2>
-                  <p style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>{t.courses.subtitle}</p>
-                </div>
-                <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
-                  {COURSES.map((c, i) => (
-                    <div key={i} style={{ padding: 16, border: `1px solid ${C.navyLight}`, borderRadius: 14, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 700, fontSize: 14, color: C.navy, marginBottom: 4 }}>{c.title}</div>
-                        <div style={{ fontSize: 12, color: C.slate }}>{c.platform}</div>
-                        <div style={{ marginTop: 6, display: "flex", gap: 6, flexWrap: "wrap" }}>
-                          <Badge text={`${c.hours} ${t.courses.hours}`} color={C.navy} bg={C.navyLight} />
-                          <Badge text={t.courses.free} color={C.green} bg={C.greenLight} />
-                          {c.cert && <Badge text="🏅 Certificate" color={C.gold} bg={C.goldLight} />}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-              <div style={{ display: "flex", gap: 12 }}>
-                <Btn outline onClick={() => setStep(2)}>{t.back}</Btn>
-                <Btn onClick={() => setStep(4)} full>{t.next}</Btn>
-              </div>
-            </motion.div>
-          )}
+      {/* ── COURSES SECTION ── */}
+      <section id="courses" style={{ padding: "80px 24px", background: sectionBg, transition: "background 0.3s" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <h2 style={{ fontFamily: "'Baloo 2', cursive", fontSize: 42, fontWeight: 800, color: textColor, marginBottom: 12, textAlign: "center" }}>
+            {t.courses.title}
+          </h2>
+          <p style={{ fontSize: 18, color: C.slate, marginBottom: 60, textAlign: "center" }}>
+            {t.courses.subtitle}
+          </p>
 
-          {/* ── Step 4: Scholarships ── */}
-          {step === 4 && (
-            <motion.div key="scholarships" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <Card>
-                <div style={{ padding: "18px 22px", background: `linear-gradient(135deg, #7B2FBE, #4A1580)`, color: C.white }}>
-                  <h2 style={{ fontSize: 18, fontWeight: 800 }}>🏛️ {t.scholarships.title}</h2>
-                </div>
-                <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
-                  {SCHOLARSHIPS.map((s, i) => (
-                    <div key={i} style={{ padding: 16, border: `1px solid #EDE9FE`, borderRadius: 14, background: "#FAFAFF" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-                        <div style={{ fontWeight: 700, fontSize: 14, color: C.navy }}>{s.name}</div>
-                        <Badge text={t.scholarships.eligible} color="#7B2FBE" bg="#F3E8FF" />
-                      </div>
-                      <div style={{ fontSize: 20, fontWeight: 900, color: "#7B2FBE", margin: "8px 0" }}>
-                        {t.scholarships.amount}{s.amount}
-                      </div>
-                      <div style={{ fontSize: 12, color: C.slate, marginBottom: 4 }}>{s.ministry}</div>
-                      <div style={{ fontSize: 12, color: C.slate, marginBottom: 8 }}>
-                        📅 {s.deadline} &nbsp;|&nbsp; {s.criteria}
-                      </div>
-                      <button style={{
-                        padding: "7px 16px", borderRadius: 10, fontSize: 12, fontWeight: 700,
-                        background: "#7B2FBE", color: C.white, border: "none", cursor: "pointer"
-                      }}>
-                        {t.scholarships.check} →
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-              <div style={{ display: "flex", gap: 12 }}>
-                <Btn outline onClick={() => setStep(3)}>{t.back}</Btn>
-                <Btn onClick={() => setStep(5)} full>{t.next}</Btn>
-              </div>
-            </motion.div>
-          )}
-
-          {/* ── Step 5: Internships ── */}
-          {step === 5 && (
-            <motion.div key="internships" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <Card>
-                <div style={{ padding: "18px 22px", background: `linear-gradient(135deg, #0891B2, #0E4F6A)`, color: C.white }}>
-                  <h2 style={{ fontSize: 18, fontWeight: 800 }}>🚀 {t.internships.title}</h2>
-                  <p style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>{t.internships.subtitle}</p>
-                </div>
-                <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
-                  {INTERNSHIPS.map((intern, i) => (
-                    <div key={i} style={{ padding: 16, border: `1px solid #E0F2FE`, borderRadius: 14, background: "#F0F9FF" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                        <div>
-                          <div style={{ fontWeight: 700, fontSize: 15, color: C.navy }}>{intern.role}</div>
-                          <div style={{ fontSize: 13, color: "#0891B2", fontWeight: 600 }}>{intern.startup}</div>
-                        </div>
-                        <Badge text={intern.mode === "Remote" ? t.internships.remote : t.internships.hybrid} color="#0891B2" bg="#E0F2FE" />
-                      </div>
-                      <div style={{ fontSize: 18, fontWeight: 800, color: C.green, margin: "8px 0" }}>
-                        {t.internships.stipend}{intern.stipend}/mo
-                      </div>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
-                        {intern.skills.map(sk => <Badge key={sk} text={sk} color="#0891B2" bg="#E0F2FE" />)}
-                      </div>
-                      <button style={{
-                        padding: "7px 16px", borderRadius: 10, fontSize: 12, fontWeight: 700,
-                        background: C.saffron, color: C.white, border: "none", cursor: "pointer"
-                      }}>
-                        {t.internships.apply} ✉️
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-              <div style={{ display: "flex", gap: 12 }}>
-                <Btn outline onClick={() => setStep(4)}>{t.back}</Btn>
-                <Btn onClick={() => setStep(6)} full>{t.next}</Btn>
-              </div>
-            </motion.div>
-          )}
-
-          {/* ── Step 6: Startup Guide ── */}
-          {step === 6 && (
-            <motion.div key="startup" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <Card>
-                <div style={{ padding: "18px 22px", background: `linear-gradient(135deg, #F59E0B, #D97706)`, color: C.white }}>
-                  <h2 style={{ fontSize: 18, fontWeight: 800 }}>💡 {t.startup.title}</h2>
-                </div>
-                <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 18 }}>
-                  {!startupResult ? (
-                    <>
-                      <div>
-                        <label style={lblStyle}>{t.startup.ideaLabel}</label>
-                        <textarea 
-                          value={startupIdea} 
-                          onChange={e => setStartupIdea(e.target.value)}
-                          placeholder={t.startup.ideaPlaceholder}
-                          style={{ ...inputStyle, minHeight: 120, resize: "vertical", fontFamily: "inherit" }}
-                        />
-                      </div>
-                      <Btn onClick={handleValidateStartup} disabled={!startupIdea.trim() || loadingStartup} full>
-                        {loadingStartup ? t.startup.validating : t.startup.validate}
-                      </Btn>
-                    </>
-                  ) : (
-                    <>
-                      {/* Validation Score */}
-                      <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-                        <div style={{
-                          width: 120, height: 120, borderRadius: "50%",
-                          background: startupResult.validationScore > 70 ? C.green : startupResult.validationScore > 50 ? C.gold : C.red,
-                          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-                          color: C.white, boxShadow: "0 4px 20px rgba(0,0,0,0.15)"
-                        }}>
-                          <div style={{ fontSize: 36, fontWeight: 900 }}>{startupResult.validationScore}</div>
-                          <div style={{ fontSize: 11, fontWeight: 600 }}>/100</div>
-                        </div>
-                      </div>
-
-                      {/* Market Opportunity */}
-                      <div style={{ padding: 16, background: C.navyLight, borderRadius: 14, borderLeft: `4px solid ${C.navy}` }}>
-                        <h3 style={{ fontSize: 12, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
-                          {t.startup.market}
-                        </h3>
-                        <p style={{ fontSize: 14, color: "#2D3748", lineHeight: 1.7 }}>{startupResult.marketOpportunity}</p>
-                      </div>
-
-                      {/* Required Skills */}
-                      <div>
-                        <h3 style={{ fontSize: 12, fontWeight: 700, color: C.slate, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
-                          {t.startup.skills}
-                        </h3>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                          {startupResult.requiredSkills.map((skill, i) => (
-                            <Badge key={i} text={skill} color={C.saffron} bg={C.saffronLight} />
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Funding Schemes */}
-                      <div>
-                        <h3 style={{ fontSize: 12, fontWeight: 700, color: C.slate, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
-                          {t.startup.funding}
-                        </h3>
-                        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                          {startupResult.fundingSchemes.map((scheme, i) => (
-                            <div key={i} style={{ padding: 14, border: `1px solid ${C.navyLight}`, borderRadius: 12, background: C.white }}>
-                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-                                <div>
-                                  <div style={{ fontWeight: 700, fontSize: 14, color: C.navy }}>{scheme.name}</div>
-                                  <div style={{ fontSize: 16, fontWeight: 800, color: C.green, marginTop: 2 }}>{scheme.amount}</div>
-                                </div>
-                                <Badge 
-                                  text={scheme.fit === "High" ? t.startup.fit.high : scheme.fit === "Medium" ? t.startup.fit.medium : t.startup.fit.low} 
-                                  color={scheme.fit === "High" ? C.green : scheme.fit === "Medium" ? C.gold : C.red}
-                                  bg={scheme.fit === "High" ? C.greenLight : scheme.fit === "Medium" ? C.goldLight : C.redLight}
-                                />
-                              </div>
-                              <div style={{ fontSize: 12, color: C.slate }}>{scheme.reason}</div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* IP Protection */}
-                      <div style={{ padding: 14, background: "#FEF3C7", borderRadius: 12, borderLeft: `4px solid ${C.gold}` }}>
-                        <h3 style={{ fontSize: 11, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>
-                          {t.startup.ip}
-                        </h3>
-                        <p style={{ fontSize: 13, color: "#78350F" }}>{startupResult.ipProtection}</p>
-                      </div>
-
-                      {/* Business Registration */}
-                      <div style={{ padding: 14, background: "#DBEAFE", borderRadius: 12, borderLeft: `4px solid #3B82F6` }}>
-                        <h3 style={{ fontSize: 11, fontWeight: 700, color: "#1E40AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>
-                          {t.startup.business}
-                        </h3>
-                        <p style={{ fontSize: 13, color: "#1E3A8A" }}>{startupResult.businessRegistration}</p>
-                      </div>
-
-                      {/* Next Step */}
-                      <div style={{ padding: 16, background: `linear-gradient(135deg, ${C.gold}, #D97706)`, borderRadius: 14, textAlign: "center" }}>
-                        <h3 style={{ fontSize: 11, fontWeight: 700, color: C.white, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
-                          {t.startup.nextStep}
-                        </h3>
-                        <p style={{ fontSize: 14, color: C.white, fontWeight: 600 }}>"{startupResult.nextStep}"</p>
-                      </div>
-
-                      <Btn outline onClick={() => { setStartupResult(null); setStartupIdea(""); }}>
-                        ← {t.startup.validate.split("→")[0].trim()}
-                      </Btn>
-                    </>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+            {COURSES.map((c, i) => (
+              <a href={c.link} target="_blank" rel="noreferrer" key={i} style={{
+                background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: 24,
+                transition: "transform 0.2s", textDecoration: "none", color: "inherit", display: "block"
+              }} onMouseOver={e => e.currentTarget.style.transform = "translateY(-4px)"}
+                onMouseOut={e => e.currentTarget.style.transform = "translateY(0)"}>
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: textColor, marginBottom: 8 }}>{c.title}</h3>
+                <p style={{ fontSize: 14, color: C.slate, marginBottom: 16 }}>{c.platform}</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  <span style={{ background: C.navyLight, color: C.navy, padding: "4px 10px", borderRadius: 12, fontSize: 12, fontWeight: 600 }}>
+                    {c.hours} {t.courses.hours}
+                  </span>
+                  <span style={{ background: C.greenLight, color: C.green, padding: "4px 10px", borderRadius: 12, fontSize: 12, fontWeight: 600 }}>
+                    {t.courses.free}
+                  </span>
+                  {c.cert && (
+                    <span style={{ background: C.goldLight, color: C.gold, padding: "4px 10px", borderRadius: 12, fontSize: 12, fontWeight: 600 }}>
+                      🏅 {t.courses.cert}
+                    </span>
                   )}
                 </div>
-              </Card>
-              <div style={{ display: "flex", gap: 12 }}>
-                <Btn outline onClick={() => setStep(5)}>{t.back}</Btn>
-                <Btn onClick={() => setStep(7)} full>{t.next}</Btn>
-              </div>
-            </motion.div>
-          )}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          {/* ── Step 7: Roadmap ── */}
-          {step === 7 && (
-            <motion.div key="roadmap" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <Card>
-                <div style={{ padding: "18px 22px", background: `linear-gradient(135deg, ${C.navy}, #2A4080)`, color: C.white }}>
-                  <h2 style={{ fontSize: 18, fontWeight: 800 }}>🗺️ {t.roadmap.title}</h2>
-                  <p style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>{profile.name}'s personalized journey</p>
+      {/* ── SCHOLARSHIPS SECTION ── */}
+      <section id="scholarships" style={{ padding: "80px 24px", background: altBg, transition: "background 0.3s" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <h2 style={{ fontFamily: "'Baloo 2', cursive", fontSize: 42, fontWeight: 800, color: textColor, marginBottom: 12, textAlign: "center" }}>
+            {t.scholarships.title}
+          </h2>
+          <p style={{ fontSize: 18, color: C.slate, marginBottom: 60, textAlign: "center" }}>
+            {t.scholarships.subtitle}
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24 }}>
+            {SCHOLARSHIPS.map((s, i) => (
+              <div key={i} style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, overflow: "hidden" }}>
+                <div style={{ background: s.color, padding: "20px 24px", color: C.white }}>
+                  <div style={{ fontSize: 32, fontWeight: 900, marginBottom: 4 }}>₹{s.amount}</div>
+                  <div style={{ fontSize: 14, opacity: 0.9 }}>{t.scholarships.amount}</div>
                 </div>
-                <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 0 }}>
-                  {ROADMAP.map((r, i) => (
-                    <div key={i} style={{ display: "flex", gap: 16, paddingBottom: i < ROADMAP.length - 1 ? 20 : 0 }}>
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div style={{
-                          width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
-                          background: i === 0 ? C.saffron : i < 3 ? C.gold : C.green,
-                          color: C.white, display: "flex", alignItems: "center", justifyContent: "center",
-                          fontWeight: 800, fontSize: 12
-                        }}>
-                          {i + 1}
-                        </div>
-                        {i < ROADMAP.length - 1 && <div style={{ width: 2, flex: 1, background: C.navyLight, marginTop: 4 }} />}
-                      </div>
-                      <div style={{ paddingTop: 8 }}>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: C.slate, textTransform: "uppercase", letterSpacing: 1 }}>
-                          {t.roadmap.month} {r.months}
-                        </div>
-                        <div style={{ fontSize: 14, color: C.navy, marginTop: 4, lineHeight: 1.6 }}>{r.milestone}</div>
-                      </div>
-                    </div>
+                <div style={{ padding: 24 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+                    <h3 style={{ fontSize: 18, fontWeight: 700, color: textColor }}>{s.name}</h3>
+                    <span style={{ background: C.greenLight, color: C.green, padding: "4px 10px", borderRadius: 12, fontSize: 11, fontWeight: 700 }}>
+                      {t.scholarships.eligible}
+                    </span>
+                  </div>
+                  <p style={{ fontSize: 13, color: C.slate, marginBottom: 6 }}>{s.ministry}</p>
+                  <p style={{ fontSize: 13, color: C.slate, marginBottom: 6 }}>📅 {s.deadline}</p>
+                  <p style={{ fontSize: 13, color: C.slate, marginBottom: 16 }}>{s.criteria}</p>
+                  <a href={s.link} target="_blank" rel="noreferrer" style={{
+                    display: "inline-block", padding: "10px 20px", borderRadius: 8, fontSize: 14, fontWeight: 700,
+                    background: s.color, color: C.white, border: "none", cursor: "pointer", textDecoration: "none"
+                  }}>
+                    {t.scholarships.check}
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── INTERNSHIPS SECTION ── */}
+      <section id="internships" style={{ padding: "80px 24px", background: sectionBg, transition: "background 0.3s" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <h2 style={{ fontFamily: "'Baloo 2', cursive", fontSize: 42, fontWeight: 800, color: textColor, marginBottom: 12, textAlign: "center" }}>
+            {t.internships.title}
+          </h2>
+          <p style={{ fontSize: 18, color: C.slate, marginBottom: 60, textAlign: "center" }}>
+            {t.internships.subtitle}
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24 }}>
+            {INTERNSHIPS.map((intern, i) => (
+              <div key={i} style={{
+                background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: 24
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+                  <div>
+                    <h3 style={{ fontSize: 18, fontWeight: 700, color: textColor, marginBottom: 4 }}>{intern.role}</h3>
+                    <p style={{ fontSize: 15, color: C.teal, fontWeight: 600 }}>{intern.startup}</p>
+                  </div>
+                  <span style={{
+                    background: C.tealLight, color: C.teal, padding: "6px 12px",
+                    borderRadius: 12, fontSize: 12, fontWeight: 700
+                  }}>
+                    {intern.mode === "Remote" ? t.internships.remote : t.internships.hybrid}
+                  </span>
+                </div>
+                <div style={{ fontSize: 24, fontWeight: 800, color: C.green, marginBottom: 16 }}>
+                  ₹{intern.stipend}/mo
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+                  {intern.skills.map(sk => (
+                    <span key={sk} style={{
+                      background: C.tealLight, color: C.teal, padding: "4px 10px",
+                      borderRadius: 12, fontSize: 12, fontWeight: 600
+                    }}>
+                      {sk}
+                    </span>
                   ))}
                 </div>
-              </Card>
-              <div style={{ textAlign: "center", padding: 24, background: C.white, borderRadius: 20, boxShadow: "0 4px 24px rgba(26,43,94,0.08)" }}>
-                <div style={{ fontSize: 48, marginBottom: 12 }}>🎉</div>
-                <h3 style={{ fontSize: 20, fontWeight: 800, color: C.navy, marginBottom: 8 }}>
-                  Your journey is set, {profile.name}!
-                </h3>
-                <p style={{ fontSize: 14, color: C.slate, marginBottom: 20 }}>
-                  Every big dream starts with a single step. You've got this! 🇮🇳
-                </p>
-                <Btn onClick={() => { 
-                  setStep(0); 
-                  setProfile({ name: "", education: "", stream: "", goal: "", interests: [], village: "" }); 
-                  setAiResult(null); 
-                }} full style={{ background: C.navy }}>
-                  {t.roadmap.restart}
-                </Btn>
+                <a href={intern.link} target="_blank" rel="noreferrer" style={{
+                  display: "inline-block", padding: "10px 20px", borderRadius: 8, fontSize: 14, fontWeight: 700,
+                  background: C.saffron, color: C.white, border: "none", cursor: "pointer", textDecoration: "none"
+                }}>
+                  {t.internships.apply}
+                </a>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-              {/* Resume Generation Section */}
-              <div style={{ marginTop: 16 }}>
-                {!resumeData ? (
-                  <Btn onClick={handleGenerateResume} disabled={loadingResume} full style={{ background: C.navy }}>
-                    {loadingResume ? t.resume.generating : t.roadmap.generateResume}
-                  </Btn>
-                ) : (
-                  <Card style={{ marginTop: 16 }}>
-                    <div style={{ padding: "18px 22px", background: C.navy, color: C.white }}>
-                      <h2 style={{ fontSize: 18, fontWeight: 800 }}>📄 {t.resume.title}</h2>
+      {/* ── GOVT SCHEMES SECTION ── */}
+      <section id="govtSchemes" style={{ padding: "80px 24px", background: sectionBg, transition: "background 0.3s" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <h2 style={{ fontFamily: "'Baloo 2', cursive", fontSize: 42, fontWeight: 800, color: textColor, marginBottom: 12, textAlign: "center" }}>
+            {t.govtSchemes?.title || "Government Schemes"}
+          </h2>
+          <p style={{ fontSize: 18, color: C.slate, marginBottom: 60, textAlign: "center" }}>
+            {t.govtSchemes?.subtitle || "Apply for relevant government initiatives"}
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24 }}>
+            {GOVT_SCHEMES.map((g, i) => (
+              <div key={i} style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, overflow: "hidden" }}>
+                <div style={{ background: g.color, padding: "20px 24px", color: C.white }}>
+                  <div style={{ fontSize: 24, fontWeight: 900, marginBottom: 4 }}>{g.name}</div>
+                  <div style={{ fontSize: 14, opacity: 0.9 }}>{g.sector}</div>
+                </div>
+                <div style={{ padding: 24 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+                    <h3 style={{ fontSize: 18, fontWeight: 700, color: textColor }}>{g.benefit}</h3>
+                  </div>
+                  <p style={{ fontSize: 13, color: C.slate, marginBottom: 16 }}>📅 {g.deadline}</p>
+                  <a href={g.link} target="_blank" rel="noreferrer" style={{
+                    display: "inline-block", padding: "10px 20px", borderRadius: 8, fontSize: 14, fontWeight: 700,
+                    background: g.color, color: C.white, border: "none", cursor: "pointer", textDecoration: "none"
+                  }}>
+                    {t.govtSchemes?.apply || "Apply Now →"}
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── STARTUP GUIDE SECTION ── */}
+      <section id="startup" style={{ padding: "80px 24px", background: altBg, transition: "background 0.3s" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <h2 style={{ fontFamily: "'Baloo 2', cursive", fontSize: 42, fontWeight: 800, color: textColor, marginBottom: 12, textAlign: "center" }}>
+            {t.startup.title}
+          </h2>
+          <p style={{ fontSize: 18, color: C.slate, marginBottom: 60, textAlign: "center" }}>
+            {t.startup.subtitle}
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
+            {/* Left: Form */}
+            <div style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: 32 }}>
+              <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: C.slate, marginBottom: 12 }}>
+                {t.startup.ideaLabel}
+              </label>
+              <textarea value={startupIdea} onChange={e => setStartupIdea(e.target.value)}
+                placeholder={t.startup.ideaPh}
+                style={{
+                  width: "100%", minHeight: 200, padding: "16px", borderRadius: 8,
+                  border: `1px solid ${borderColor}`, fontSize: 15, fontFamily: "inherit",
+                  background: isDark ? C.darkCard : C.white, color: textColor, resize: "vertical"
+                }} />
+              <button onClick={handleValidateStartup}
+                disabled={!startupIdea.trim() || loadingStartup}
+                style={{
+                  width: "100%", padding: "14px", borderRadius: 10, fontSize: 16, fontWeight: 700,
+                  background: C.gold, color: C.white, border: "none", cursor: "pointer",
+                  marginTop: 20, opacity: (!startupIdea.trim() || loadingStartup) ? 0.5 : 1
+                }}>
+                {loadingStartup ? t.startup.validating : t.startup.validate}
+              </button>
+            </div>
+
+            {/* Right: Result */}
+            <div>
+              {!startupResult ? (
+                <div style={{
+                  background: cardBg, border: `2px dashed ${borderColor}`, borderRadius: 16,
+                  padding: 60, textAlign: "center", minHeight: 400, display: "flex",
+                  alignItems: "center", justifyContent: "center"
+                }}>
+                  <div>
+                    <div style={{ fontSize: 64, marginBottom: 16 }}>💡</div>
+                    <p style={{ fontSize: 16, color: C.slate }}>Your validation results will appear here</p>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                  {/* Score Badge */}
+                  <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+                    <div style={{
+                      width: 120, height: 120, borderRadius: "50%",
+                      background: startupResult.validationScore > 70 ? C.green : startupResult.validationScore > 50 ? C.gold : C.red,
+                      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                      color: C.white, boxShadow: "0 4px 20px rgba(0,0,0,0.15)"
+                    }}>
+                      <div style={{ fontSize: 36, fontWeight: 900 }}>{startupResult.validationScore}</div>
+                      <div style={{ fontSize: 11, fontWeight: 600 }}>/100</div>
                     </div>
-                    <div style={{ padding: 32, background: C.white }}>
-                      {/* Name Header */}
-                      <div style={{ marginBottom: 24, borderBottom: `2px solid ${C.navy}`, paddingBottom: 12 }}>
-                        <h1 style={{ fontSize: 28, fontWeight: 900, color: C.navy, marginBottom: 4 }}>{profile.name}</h1>
-                        <p style={{ fontSize: 14, color: C.slate }}>{profile.village} | {profile.goal}</p>
-                      </div>
+                  </div>
 
-                      {/* Objective */}
-                      <div style={{ marginBottom: 20 }}>
-                        <h3 style={{ fontSize: 13, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
-                          {t.resume.objective}
-                        </h3>
-                        <p style={{ fontSize: 14, color: "#2D3748", lineHeight: 1.6 }}>{resumeData.objective}</p>
-                      </div>
+                  {/* Market Opportunity */}
+                  <div style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 12, padding: 20, borderLeft: `4px solid ${C.navy}` }}>
+                    <h3 style={{ fontSize: 13, fontWeight: 700, color: textColor, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                      {t.startup.market}
+                    </h3>
+                    <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.7 }}>{startupResult.marketOpportunity}</p>
+                  </div>
 
-                      {/* Education */}
-                      <div style={{ marginBottom: 20 }}>
-                        <h3 style={{ fontSize: 13, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
-                          {t.resume.education}
-                        </h3>
-                        <p style={{ fontSize: 14, color: "#2D3748" }}>{resumeData.education}</p>
-                      </div>
+                  {/* Required Skills */}
+                  <div style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 12, padding: 20 }}>
+                    <h3 style={{ fontSize: 13, fontWeight: 700, color: textColor, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                      {t.startup.skills}
+                    </h3>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                      {startupResult.requiredSkills.map((skill, i) => (
+                        <span key={i} style={{
+                          background: C.saffronLight, color: C.saffron, padding: "6px 14px",
+                          borderRadius: 20, fontSize: 13, fontWeight: 600
+                        }}>
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
 
-                      {/* Skills */}
-                      <div style={{ marginBottom: 20 }}>
-                        <h3 style={{ fontSize: 13, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
-                          {t.resume.skills}
-                        </h3>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                          {resumeData.skills.map((skill, i) => (
-                            <Badge key={i} text={skill} color={C.navy} bg={C.navyLight} />
-                          ))}
+                  {/* Funding Schemes */}
+                  <div style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 12, padding: 20 }}>
+                    <h3 style={{ fontSize: 13, fontWeight: 700, color: textColor, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>
+                      {t.startup.funding}
+                    </h3>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                      {startupResult.fundingSchemes.map((scheme, i) => (
+                        <div key={i} style={{
+                          padding: 14, border: `1px solid ${borderColor}`, borderRadius: 10,
+                          display: "flex", justifyContent: "space-between", alignItems: "center"
+                        }}>
+                          <div>
+                            <div style={{ fontSize: 15, fontWeight: 700, color: textColor }}>{scheme.name}</div>
+                            <div style={{ fontSize: 13, color: C.slate, marginTop: 4 }}>{scheme.reason}</div>
+                          </div>
+                          <span style={{
+                            background: scheme.fit === "High" ? C.greenLight : scheme.fit === "Medium" ? C.goldLight : "#F3F4F6",
+                            color: scheme.fit === "High" ? C.green : scheme.fit === "Medium" ? C.gold : C.slate,
+                            padding: "6px 12px", borderRadius: 12, fontSize: 12, fontWeight: 700
+                          }}>
+                            {scheme.fit === "High" ? t.startup.fitHigh : scheme.fit === "Medium" ? t.startup.fitMedium : t.startup.fitLow}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Next Step */}
+                  <div style={{
+                    background: `linear-gradient(135deg, ${C.gold}, #D97706)`,
+                    borderRadius: 12, padding: 20, textAlign: "center"
+                  }}>
+                    <h3 style={{ fontSize: 13, fontWeight: 700, color: C.white, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                      {t.startup.nextStep}
+                    </h3>
+                    <p style={{ fontSize: 15, color: C.white, fontWeight: 600 }}>"{startupResult.nextStep}"</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TALK TO MENTOR SECTION ── */}
+      <section id="mentors" style={{ padding: "80px 24px", background: sectionBg, transition: "background 0.3s" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40 }}>
+            <div>
+              <h2 style={{ fontFamily: "'Baloo 2', cursive", fontSize: 42, fontWeight: 800, color: textColor, marginBottom: 8 }}>
+                {t.mentors.title}
+              </h2>
+              <p style={{ fontSize: 18, color: C.slate }}>{t.mentors.subtitle}</p>
+            </div>
+            <input value={mentorSearch} onChange={e => setMentorSearch(e.target.value)}
+              placeholder={t.mentors.search}
+              style={{
+                padding: "12px 20px", borderRadius: 10, border: `1px solid ${borderColor}`,
+                fontSize: 15, width: 320, background: isDark ? C.darkCard : C.white, color: textColor
+              }} />
+          </div>
+
+          <div style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, overflow: "hidden" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ background: isDark ? C.darkBg : "#F8F9FA" }}>
+                  {t.mentors.tableHeaders.map((h, i) => (
+                    <th key={i} style={{
+                      padding: "16px 20px", textAlign: "left", fontSize: 13, fontWeight: 700,
+                      color: textColor, textTransform: "uppercase", letterSpacing: 1
+                    }}>
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filteredMentors.map((m, i) => (
+                  <tr key={i} style={{
+                    background: i % 2 === 0 ? cardBg : (isDark ? C.darkAlt : "#F8F9FA"),
+                    borderTop: `1px solid ${borderColor}`
+                  }}>
+                    <td style={{ padding: "20px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <div style={{
+                          width: 48, height: 48, borderRadius: "50%",
+                          background: `linear-gradient(135deg, ${C.saffron}, ${C.gold})`,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          color: C.white, fontSize: 18, fontWeight: 700
+                        }}>
+                          {m.name[0]}
+                        </div>
+                        <div>
+                          <div style={{ fontSize: 15, fontWeight: 700, color: textColor }}>{m.name}</div>
+                          <div style={{ fontSize: 13, color: C.slate }}>{m.location}</div>
                         </div>
                       </div>
-
-                      {/* Projects */}
-                      <div style={{ marginBottom: 20 }}>
-                        <h3 style={{ fontSize: 13, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
-                          {t.resume.projects}
-                        </h3>
-                        <ul style={{ paddingLeft: 20, margin: 0 }}>
-                          {resumeData.projects.map((project, i) => (
-                            <li key={i} style={{ fontSize: 14, color: "#2D3748", marginBottom: 6, lineHeight: 1.6 }}>{project}</li>
-                          ))}
-                        </ul>
+                    </td>
+                    <td style={{ padding: "20px" }}>
+                      <span style={{
+                        background: C.greenLight, color: C.green, padding: "6px 12px",
+                        borderRadius: 12, fontSize: 13, fontWeight: 600
+                      }}>
+                        {m.specialization}
+                      </span>
+                    </td>
+                    <td style={{ padding: "20px", fontSize: 14, color: textColor }}>{m.experience}</td>
+                    <td style={{ padding: "20px" }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                        {m.languages.map(l => (
+                          <span key={l} style={{
+                            background: isDark ? C.darkBorder : "#E5E7EB", color: textColor,
+                            padding: "4px 8px", borderRadius: 8, fontSize: 12
+                          }}>
+                            {l}
+                          </span>
+                        ))}
                       </div>
-
-                      {/* Certifications */}
-                      <div style={{ marginBottom: 20 }}>
-                        <h3 style={{ fontSize: 13, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
-                          {t.resume.certifications}
-                        </h3>
-                        <ul style={{ paddingLeft: 20, margin: 0 }}>
-                          {resumeData.certifications.map((cert, i) => (
-                            <li key={i} style={{ fontSize: 14, color: "#2D3748", marginBottom: 6 }}>{cert}</li>
-                          ))}
-                        </ul>
+                    </td>
+                    <td style={{ padding: "20px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span style={{ fontSize: 16 }}>⭐</span>
+                        <span style={{ fontSize: 15, fontWeight: 700, color: C.gold }}>{m.rating}</span>
                       </div>
+                    </td>
+                    <td style={{ padding: "20px" }}>
+                      <button style={{
+                        padding: "8px 20px", borderRadius: 8, fontSize: 14, fontWeight: 700,
+                        background: C.green, color: C.white, border: "none", cursor: "pointer"
+                      }}>
+                        {t.mentors.call}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
-                      {/* Languages */}
-                      <div style={{ marginBottom: 20 }}>
-                        <h3 style={{ fontSize: 13, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
-                          {t.resume.languages}
-                        </h3>
-                        <p style={{ fontSize: 14, color: "#2D3748" }}>{resumeData.languages.join(", ")}</p>
-                      </div>
+      {/* ── RESUME BUILDER SECTION ── */}
+      <section id="resume" style={{ padding: "80px 24px", background: altBg, transition: "background 0.3s" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
+          <h2 style={{ fontFamily: "'Baloo 2', cursive", fontSize: 42, fontWeight: 800, color: textColor, marginBottom: 12 }}>
+            {t.resume.title}
+          </h2>
+          <p style={{ fontSize: 18, color: C.slate, marginBottom: 40 }}>
+            {t.resume.subtitle}
+          </p>
 
-                      {/* Copy Button */}
-                      <Btn onClick={copyResumeToClipboard} full style={{ background: C.saffron }}>
-                        {copiedResume ? t.resume.copied : t.resume.copy}
-                      </Btn>
-                    </div>
-                  </Card>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </main>
-
-      {/* ── Bottom Nav ── */}
-      <nav style={{
-        position: "fixed", bottom: 0, left: 0, right: 0,
-        background: C.white, borderTop: `2px solid ${C.navyLight}`,
-        display: "flex", justifyContent: "space-around", alignItems: "center",
-        padding: "10px 0 14px",
-      }}>
-        {[["0", "👤", "Profile"], ["2", "✨", "Guidance"], ["3", "📚", "Courses"], ["4", "🏛️", "Scholar"], ["5", "🚀", "Intern"], ["6", "💡", "Startup"]].map(([s, icon, label]) => (
-          <button key={s} onClick={() => { if (parseInt(s) <= step || (parseInt(s) === 2 && aiResult)) setStep(parseInt(s)); }}
-            style={{
-              display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
-              background: "none", border: "none", cursor: "pointer",
-              color: step === parseInt(s) ? C.saffron : C.slate,
-              fontWeight: step === parseInt(s) ? 700 : 400
+          {!profile.name || !profile.education ? (
+            <div style={{
+              background: C.redLight, border: `1px solid ${C.red}`, borderRadius: 12,
+              padding: 20, color: C.red, fontSize: 15, marginBottom: 24
             }}>
-            <span style={{ fontSize: 18 }}>{icon}</span>
-            <span style={{ fontSize: 9 }}>{label}</span>
-          </button>
-        ))}
-      </nav>
+              ⚠️ {t.resume.warning}
+            </div>
+          ) : null}
+
+          {!resumeData ? (
+            <button onClick={handleGenerateResume}
+              disabled={!profile.name || !profile.education || loadingResume}
+              style={{
+                padding: "16px 40px", borderRadius: 12, fontSize: 18, fontWeight: 700,
+                background: C.navy, color: C.white, border: "none", cursor: "pointer",
+                opacity: (!profile.name || !profile.education || loadingResume) ? 0.5 : 1
+              }}>
+              {loadingResume ? t.resume.generating : t.resume.generate}
+            </button>
+          ) : (
+            <div style={{ background: cardBg, border: `1px solid ${borderColor}`, borderRadius: 16, padding: 48, textAlign: "left" }}>
+              {/* Header */}
+              <div style={{ borderBottom: `2px solid ${C.navy}`, paddingBottom: 20, marginBottom: 24 }}>
+                <h1 style={{ fontSize: 32, fontWeight: 900, color: C.navy, marginBottom: 8 }}>{profile.name}</h1>
+                <p style={{ fontSize: 15, color: C.slate }}>{profile.village} | {profile.goal}</p>
+              </div>
+
+              {/* Objective */}
+              <div style={{ marginBottom: 24 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                  {t.resume.objective}
+                </h3>
+                <p style={{ fontSize: 15, color: textColor, lineHeight: 1.7 }}>{resumeData.objective}</p>
+              </div>
+
+              {/* Education */}
+              <div style={{ marginBottom: 24 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                  {t.resume.education}
+                </h3>
+                <p style={{ fontSize: 15, color: textColor }}>{resumeData.education}</p>
+              </div>
+
+              {/* Skills */}
+              <div style={{ marginBottom: 24 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                  {t.resume.skills}
+                </h3>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {resumeData.skills.map((skill, i) => (
+                    <span key={i} style={{
+                      background: C.navyLight, color: C.navy, padding: "6px 14px",
+                      borderRadius: 20, fontSize: 13, fontWeight: 600
+                    }}>
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Projects */}
+              <div style={{ marginBottom: 24 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                  {t.resume.projects}
+                </h3>
+                <ul style={{ paddingLeft: 20, margin: 0 }}>
+                  {resumeData.projects.map((p, i) => (
+                    <li key={i} style={{ fontSize: 14, color: textColor, marginBottom: 8, lineHeight: 1.6 }}>{p}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Certifications */}
+              <div style={{ marginBottom: 24 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                  {t.resume.certifications}
+                </h3>
+                <ul style={{ paddingLeft: 20, margin: 0 }}>
+                  {resumeData.certifications.map((c, i) => (
+                    <li key={i} style={{ fontSize: 14, color: textColor, marginBottom: 8 }}>{c}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Languages */}
+              <div style={{ marginBottom: 32 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                  {t.resume.languages}
+                </h3>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {resumeData.languages.map((l, i) => (
+                    <span key={i} style={{
+                      background: C.greenLight, color: C.green, padding: "6px 14px",
+                      borderRadius: 20, fontSize: 13, fontWeight: 600
+                    }}>
+                      {l}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div style={{ display: "flex", gap: 12 }}>
+                <button onClick={copyResumeText} style={{
+                  flex: 1, padding: "12px", borderRadius: 10, fontSize: 15, fontWeight: 700,
+                  background: C.saffron, color: C.white, border: "none", cursor: "pointer"
+                }}>
+                  {copiedResume ? t.resume.copied : t.resume.copy}
+                </button>
+                <button onClick={() => setResumeData(null)} style={{
+                  flex: 1, padding: "12px", borderRadius: 10, fontSize: 15, fontWeight: 700,
+                  background: "transparent", color: C.navy, border: `2px solid ${C.navy}`, cursor: "pointer"
+                }}>
+                  {t.resume.regenerate}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── FOOTER ── */}
+      <footer style={{ background: C.navy, padding: "60px 24px 24px", color: C.white }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 16 }}>
+            <div style={{ fontSize: 40 }}>🎓</div>
+            <span style={{ fontFamily: "'Baloo 2', cursive", fontSize: 28, fontWeight: 800 }}>Vidya AI</span>
+          </div>
+          <p style={{ fontSize: 16, color: "#94A3B8", marginBottom: 32 }}>{t.footer.tagline}</p>
+
+          <div style={{ display: "flex", justifyContent: "center", gap: 32, marginBottom: 40 }}>
+            {[
+              [t.nav.home, "#"],
+              [t.nav.guidance, "#guidance"],
+              [t.nav.courses, "#courses"],
+              [t.nav.scholarships, "#scholarships"],
+              [t.nav.internships, "#internships"],
+              [t.nav.startup, "#startup"],
+              [t.nav.mentors, "#mentors"],
+            ].map(([label, href], i) => (
+              <a key={i} href={href} style={{ fontSize: 14, color: "#94A3B8", textDecoration: "none", transition: "color 0.2s" }}
+                onMouseOver={e => e.target.style.color = C.saffron}
+                onMouseOut={e => e.target.style.color = "#94A3B8"}>
+                {label}
+              </a>
+            ))}
+          </div>
+
+          <div style={{
+            background: C.redLight, color: C.red, padding: "12px 24px",
+            borderRadius: 20, fontSize: 11, fontWeight: 700, textTransform: "uppercase",
+            letterSpacing: 1, display: "inline-block"
+          }}>
+            {t.footer.disclaimer}
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
-
-// shared style consts
-const lblStyle = { display: "block", fontSize: 11, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 };
-const inputStyle = { width: "100%", padding: "12px 14px", borderRadius: 12, border: "1.5px solid #E5E7EB", fontSize: 14, background: "#FAFAFA", outline: "none", color: "#1A2B5E" };
