@@ -26,7 +26,7 @@ const T = {
     appTitle: "Vidya AI",
     appSubtitle: "Rural Academic Empowerment Platform",
     disclaimer: "DEMO ONLY – For AI for Bharat Hackathon. Not official academic advice.",
-    steps: ["Profile", "AI Guidance", "Courses", "Scholarships", "Internships", "Roadmap"],
+    steps: ["Profile", "AI Guidance", "Courses", "Scholarships", "Internships", "Startup", "Roadmap"],
     profile: {
       title: "Tell us about yourself",
       name: "Your Name",
@@ -77,6 +77,34 @@ const T = {
       month: "Month",
       milestone: "Milestone",
       restart: "Start New Profile",
+      generateResume: "📄 Generate My Resume",
+    },
+    startup: {
+      title: "Startup Idea Validator",
+      ideaLabel: "Your Startup Idea",
+      ideaPlaceholder: "e.g. I want to build an app that connects farmers to buyers directly",
+      validate: "Validate My Idea →",
+      validating: "Analyzing your startup idea...",
+      score: "Validation Score",
+      market: "Market Opportunity",
+      skills: "Required Skills",
+      funding: "Funding Schemes",
+      ip: "IP Protection",
+      business: "Business Registration",
+      nextStep: "Next Step",
+      fit: { high: "High Fit", medium: "Medium Fit", low: "Low Fit" },
+    },
+    resume: {
+      title: "Your Resume",
+      generating: "Generating your resume...",
+      objective: "Career Objective",
+      education: "Education",
+      skills: "Skills",
+      projects: "Suggested Projects to Build",
+      certifications: "Certifications to Pursue",
+      languages: "Languages",
+      copy: "Copy Resume Text",
+      copied: "Copied!",
     },
     next: "Next Step →",
     back: "← Back",
@@ -85,7 +113,7 @@ const T = {
     appTitle: "विद्या AI",
     appSubtitle: "ग्रामीण शैक्षणिक सशक्तिकरण मंच",
     disclaimer: "केवल डेमो – AI for Bharat हैकाथॉन के लिए। यह आधिकारिक शैक्षणिक सलाह नहीं है।",
-    steps: ["प्रोफाइल", "AI मार्गदर्शन", "कोर्स", "छात्रवृत्ति", "इंटर्नशिप", "रोडमैप"],
+    steps: ["प्रोफाइल", "AI मार्गदर्शन", "कोर्स", "छात्रवृत्ति", "इंटर्नशिप", "स्टार्टअप", "रोडमैप"],
     profile: {
       title: "अपने बारे में बताएं",
       name: "आपका नाम",
@@ -136,6 +164,34 @@ const T = {
       month: "महीना",
       milestone: "मील का पत्थर",
       restart: "नई प्रोफाइल शुरू करें",
+      generateResume: "📄 मेरा रिज्यूमे बनाएं",
+    },
+    startup: {
+      title: "स्टार्टअप विचार सत्यापन",
+      ideaLabel: "आपका स्टार्टअप विचार",
+      ideaPlaceholder: "जैसे मैं एक ऐप बनाना चाहता हूं जो किसानों को खरीदारों से सीधे जोड़े",
+      validate: "मेरे विचार को सत्यापित करें →",
+      validating: "आपके स्टार्टअप विचार का विश्लेषण हो रहा है...",
+      score: "सत्यापन स्कोर",
+      market: "बाजार अवसर",
+      skills: "आवश्यक कौशल",
+      funding: "फंडिंग योजनाएं",
+      ip: "आईपी सुरक्षा",
+      business: "व्यवसाय पंजीकरण",
+      nextStep: "अगला कदम",
+      fit: { high: "उच्च उपयुक्तता", medium: "मध्यम उपयुक्तता", low: "कम उपयुक्तता" },
+    },
+    resume: {
+      title: "आपका रिज्यूमे",
+      generating: "आपका रिज्यूमे बनाया जा रहा है...",
+      objective: "करियर उद्देश्य",
+      education: "शिक्षा",
+      skills: "कौशल",
+      projects: "बनाने के लिए सुझाए गए प्रोजेक्ट",
+      certifications: "प्राप्त करने के लिए प्रमाणपत्र",
+      languages: "भाषाएं",
+      copy: "रिज्यूमे टेक्स्ट कॉपी करें",
+      copied: "कॉपी हो गया!",
     },
     next: "अगला →",
     back: "← वापस",
@@ -144,7 +200,7 @@ const T = {
     appTitle: "विद्या AI",
     appSubtitle: "ग्रामीण शैक्षणिक सक्षमीकरण व्यासपीठ",
     disclaimer: "केवल डेमो – AI for Bharat हॅकाथॉनसाठी. अधिकृत शैक्षणिक सल्ला नाही.",
-    steps: ["प्रोफाइल", "AI मार्गदर्शन", "अभ्यासक्रम", "शिष्यवृत्ती", "इंटर्नशिप", "रोडमॅप"],
+    steps: ["प्रोफाइल", "AI मार्गदर्शन", "अभ्यासक्रम", "शिष्यवृत्ती", "इंटर्नशिप", "स्टार्टअप", "रोडमॅप"],
     profile: {
       title: "तुमच्याबद्दल सांगा",
       name: "तुमचे नाव",
@@ -195,6 +251,34 @@ const T = {
       month: "महिना",
       milestone: "मैलाचा दगड",
       restart: "नवीन प्रोफाइल सुरू करा",
+      generateResume: "📄 माझा रिझ्युमे तयार करा",
+    },
+    startup: {
+      title: "स्टार्टअप कल्पना तपासणी",
+      ideaLabel: "तुमची स्टार्टअप कल्पना",
+      ideaPlaceholder: "उदा. मी एक अॅप तयार करू इच्छितो जे शेतकऱ्यांना खरेदीदारांशी थेट जोडते",
+      validate: "माझी कल्पना तपासा →",
+      validating: "तुमच्या स्टार्टअप कल्पनेचे विश्लेषण करत आहे...",
+      score: "तपासणी स्कोअर",
+      market: "बाजार संधी",
+      skills: "आवश्यक कौशल्ये",
+      funding: "निधी योजना",
+      ip: "आयपी संरक्षण",
+      business: "व्यवसाय नोंदणी",
+      nextStep: "पुढील पाऊल",
+      fit: { high: "उच्च योग्यता", medium: "मध्यम योग्यता", low: "कमी योग्यता" },
+    },
+    resume: {
+      title: "तुमचा रिझ्युमे",
+      generating: "तुमचा रिझ्युमे तयार करत आहे...",
+      objective: "करिअर उद्दिष्ट",
+      education: "शिक्षण",
+      skills: "कौशल्ये",
+      projects: "तयार करण्यासाठी सुचवलेले प्रकल्प",
+      certifications: "मिळवण्यासाठी प्रमाणपत्रे",
+      languages: "भाषा",
+      copy: "रिझ्युमे मजकूर कॉपी करा",
+      copied: "कॉपी झाले!",
     },
     next: "पुढे →",
     back: "← मागे",
@@ -268,6 +352,105 @@ Give personalized study guidance. Return ONLY valid JSON (no markdown):
   const text = data.content.map(b => b.text || "").join("");
   const clean = text.replace(/```json|```/g, "").trim();
   return JSON.parse(clean);
+}
+
+// ── Startup Validation API Call ────────────────────────────────────────────────
+async function validateStartupIdea(idea) {
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1500,
+        messages: [{
+          role: "user",
+          content: `You are a startup mentor for rural Indian entrepreneurs. Analyze this startup idea: ${idea}. Return ONLY valid JSON (no markdown):
+{
+  "validationScore": 75,
+  "marketOpportunity": "2 sentence assessment of market potential",
+  "requiredSkills": ["skill1", "skill2", "skill3", "skill4"],
+  "fundingSchemes": [
+    { "name": "MUDRA Loan", "amount": "₹10L", "fit": "High", "reason": "one line explanation" },
+    { "name": "Startup India", "amount": "Tax benefits", "fit": "Medium", "reason": "one line explanation" },
+    { "name": "PMEGP", "amount": "₹25L", "fit": "High", "reason": "one line explanation" },
+    { "name": "Stand-up India", "amount": "₹1Cr", "fit": "Low", "reason": "one line explanation" }
+  ],
+  "ipProtection": "Patent / Copyright / Trademark — one sentence on which applies",
+  "businessRegistration": "Sole Proprietorship / LLP / Pvt Ltd — one sentence recommendation",
+  "nextStep": "single most important action to take this week"
+}`
+        }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content.map(b => b.text || "").join("");
+    const clean = text.replace(/```json|```/g, "").trim();
+    return JSON.parse(clean);
+  } catch (e) {
+    console.error(e);
+    // Fallback data
+    return {
+      validationScore: 72,
+      marketOpportunity: "India's agricultural sector is rapidly digitizing with government support. Direct farmer-to-buyer platforms can reduce middlemen costs by 20-30% and are eligible for multiple rural innovation schemes.",
+      requiredSkills: ["Mobile App Development", "Supply Chain Management", "Digital Marketing", "Farmer Communication"],
+      fundingSchemes: [
+        { name: "MUDRA Loan", amount: "₹10L", fit: "High", reason: "Perfect for initial app development and pilot testing in 2-3 villages" },
+        { name: "Startup India", amount: "Tax benefits", fit: "High", reason: "Agri-tech startups get 3-year tax holiday and fast-track patent processing" },
+        { name: "PMEGP", amount: "₹25L", fit: "Medium", reason: "Good for scaling operations but requires manufacturing component" },
+        { name: "Stand-up India", amount: "₹1Cr", fit: "Low", reason: "Better suited for larger infrastructure projects, not early-stage apps" }
+      ],
+      ipProtection: "Copyright for app code and Trademark for brand name. Patent not needed unless unique algorithm.",
+      businessRegistration: "Start with LLP for liability protection and easier funding. Upgrade to Pvt Ltd when raising VC money.",
+      nextStep: "Interview 20 farmers this week to validate the problem. Record their current selling process and pain points."
+    };
+  }
+}
+
+// ── Resume Generation API Call ─────────────────────────────────────────────────
+async function generateResume(profile) {
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{
+          role: "user",
+          content: `Generate a clean simple resume for a rural Indian student with this profile:
+Name: ${profile.name}, Location: ${profile.village}, Education: ${profile.education}, Stream: ${profile.stream}, Career Goal: ${profile.goal}, Interests: ${profile.interests.join(", ")}.
+Return ONLY valid JSON (no markdown):
+{
+  "objective": "one sentence career objective",
+  "education": "formatted education line",
+  "skills": ["skill1", "skill2", "skill3", "skill4", "skill5"],
+  "projects": ["project idea 1 relevant to their goal", "project idea 2"],
+  "certifications": ["relevant free certification 1", "relevant free certification 2"],
+  "languages": ["Hindi", "English", "regional language if applicable"]
+}`
+        }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content.map(b => b.text || "").join("");
+    const clean = text.replace(/```json|```/g, "").trim();
+    return JSON.parse(clean);
+  } catch (e) {
+    console.error(e);
+    // Fallback data
+    return {
+      objective: `Aspiring ${profile.goal} professional from ${profile.village} seeking opportunities to apply technical skills and contribute to rural development`,
+      education: `${profile.education} - ${profile.stream}`,
+      skills: ["Problem Solving", "Communication", "Digital Literacy", "Team Collaboration", "Quick Learning"],
+      projects: [
+        `${profile.goal}-focused project using online resources and local community needs`,
+        `Digital solution addressing a problem in ${profile.village} area`
+      ],
+      certifications: ["NPTEL Online Certification", "Google Digital Skills Certification"],
+      languages: ["Hindi", "English", "Marathi"]
+    };
+  }
 }
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
@@ -349,6 +532,12 @@ export default function VidyaAI() {
     name: "", education: "", stream: "", goal: "", interests: [], village: ""
   });
   const [aiResult, setAiResult] = useState(null);
+  const [startupIdea, setStartupIdea] = useState("");
+  const [startupResult, setStartupResult] = useState(null);
+  const [resumeData, setResumeData] = useState(null);
+  const [loadingStartup, setLoadingStartup] = useState(false);
+  const [loadingResume, setLoadingResume] = useState(false);
+  const [copiedResume, setCopiedResume] = useState(false);
 
   const toggleInterest = (item) => {
     setProfile(p => ({
@@ -363,7 +552,7 @@ export default function VidyaAI() {
     try {
       const result = await getPersonalizedGuidance(profile);
       setAiResult(result);
-      setStep(2); // move to courses after getting AI result
+      setStep(2);
     } catch (e) {
       console.error(e);
       setAiResult({
@@ -380,6 +569,60 @@ export default function VidyaAI() {
   };
 
   const canStart = profile.name && profile.education && profile.stream && profile.goal;
+
+  const handleValidateStartup = async () => {
+    if (!startupIdea.trim()) return;
+    setLoadingStartup(true);
+    try {
+      const result = await validateStartupIdea(startupIdea);
+      setStartupResult(result);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingStartup(false);
+    }
+  };
+
+  const handleGenerateResume = async () => {
+    setLoadingResume(true);
+    try {
+      const result = await generateResume(profile);
+      setResumeData(result);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingResume(false);
+    }
+  };
+
+  const copyResumeToClipboard = () => {
+    if (!resumeData) return;
+    const resumeText = `${profile.name}
+${profile.village}
+${profile.goal}
+
+CAREER OBJECTIVE
+${resumeData.objective}
+
+EDUCATION
+${resumeData.education}
+
+SKILLS
+${resumeData.skills.join(", ")}
+
+SUGGESTED PROJECTS
+${resumeData.projects.map((p, i) => `${i + 1}. ${p}`).join("\n")}
+
+CERTIFICATIONS TO PURSUE
+${resumeData.certifications.map((c, i) => `${i + 1}. ${c}`).join("\n")}
+
+LANGUAGES
+${resumeData.languages.join(", ")}`;
+    
+    navigator.clipboard.writeText(resumeText);
+    setCopiedResume(true);
+    setTimeout(() => setCopiedResume(false), 2000);
+  };
 
   return (
     <div style={{ minHeight: "100vh", background: C.offWhite, fontFamily: "'Noto Sans', 'Hind', sans-serif", paddingBottom: 80 }}>
@@ -705,8 +948,129 @@ export default function VidyaAI() {
             </motion.div>
           )}
 
-          {/* ── Step 6: Roadmap ── */}
+          {/* ── Step 6: Startup Guide ── */}
           {step === 6 && (
+            <motion.div key="startup" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <Card>
+                <div style={{ padding: "18px 22px", background: `linear-gradient(135deg, #F59E0B, #D97706)`, color: C.white }}>
+                  <h2 style={{ fontSize: 18, fontWeight: 800 }}>💡 {t.startup.title}</h2>
+                </div>
+                <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 18 }}>
+                  {!startupResult ? (
+                    <>
+                      <div>
+                        <label style={lblStyle}>{t.startup.ideaLabel}</label>
+                        <textarea 
+                          value={startupIdea} 
+                          onChange={e => setStartupIdea(e.target.value)}
+                          placeholder={t.startup.ideaPlaceholder}
+                          style={{ ...inputStyle, minHeight: 120, resize: "vertical", fontFamily: "inherit" }}
+                        />
+                      </div>
+                      <Btn onClick={handleValidateStartup} disabled={!startupIdea.trim() || loadingStartup} full>
+                        {loadingStartup ? t.startup.validating : t.startup.validate}
+                      </Btn>
+                    </>
+                  ) : (
+                    <>
+                      {/* Validation Score */}
+                      <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+                        <div style={{
+                          width: 120, height: 120, borderRadius: "50%",
+                          background: startupResult.validationScore > 70 ? C.green : startupResult.validationScore > 50 ? C.gold : C.red,
+                          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                          color: C.white, boxShadow: "0 4px 20px rgba(0,0,0,0.15)"
+                        }}>
+                          <div style={{ fontSize: 36, fontWeight: 900 }}>{startupResult.validationScore}</div>
+                          <div style={{ fontSize: 11, fontWeight: 600 }}>/100</div>
+                        </div>
+                      </div>
+
+                      {/* Market Opportunity */}
+                      <div style={{ padding: 16, background: C.navyLight, borderRadius: 14, borderLeft: `4px solid ${C.navy}` }}>
+                        <h3 style={{ fontSize: 12, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
+                          {t.startup.market}
+                        </h3>
+                        <p style={{ fontSize: 14, color: "#2D3748", lineHeight: 1.7 }}>{startupResult.marketOpportunity}</p>
+                      </div>
+
+                      {/* Required Skills */}
+                      <div>
+                        <h3 style={{ fontSize: 12, fontWeight: 700, color: C.slate, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                          {t.startup.skills}
+                        </h3>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                          {startupResult.requiredSkills.map((skill, i) => (
+                            <Badge key={i} text={skill} color={C.saffron} bg={C.saffronLight} />
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Funding Schemes */}
+                      <div>
+                        <h3 style={{ fontSize: 12, fontWeight: 700, color: C.slate, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                          {t.startup.funding}
+                        </h3>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                          {startupResult.fundingSchemes.map((scheme, i) => (
+                            <div key={i} style={{ padding: 14, border: `1px solid ${C.navyLight}`, borderRadius: 12, background: C.white }}>
+                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                                <div>
+                                  <div style={{ fontWeight: 700, fontSize: 14, color: C.navy }}>{scheme.name}</div>
+                                  <div style={{ fontSize: 16, fontWeight: 800, color: C.green, marginTop: 2 }}>{scheme.amount}</div>
+                                </div>
+                                <Badge 
+                                  text={scheme.fit === "High" ? t.startup.fit.high : scheme.fit === "Medium" ? t.startup.fit.medium : t.startup.fit.low} 
+                                  color={scheme.fit === "High" ? C.green : scheme.fit === "Medium" ? C.gold : C.red}
+                                  bg={scheme.fit === "High" ? C.greenLight : scheme.fit === "Medium" ? C.goldLight : C.redLight}
+                                />
+                              </div>
+                              <div style={{ fontSize: 12, color: C.slate }}>{scheme.reason}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* IP Protection */}
+                      <div style={{ padding: 14, background: "#FEF3C7", borderRadius: 12, borderLeft: `4px solid ${C.gold}` }}>
+                        <h3 style={{ fontSize: 11, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>
+                          {t.startup.ip}
+                        </h3>
+                        <p style={{ fontSize: 13, color: "#78350F" }}>{startupResult.ipProtection}</p>
+                      </div>
+
+                      {/* Business Registration */}
+                      <div style={{ padding: 14, background: "#DBEAFE", borderRadius: 12, borderLeft: `4px solid #3B82F6` }}>
+                        <h3 style={{ fontSize: 11, fontWeight: 700, color: "#1E40AF", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>
+                          {t.startup.business}
+                        </h3>
+                        <p style={{ fontSize: 13, color: "#1E3A8A" }}>{startupResult.businessRegistration}</p>
+                      </div>
+
+                      {/* Next Step */}
+                      <div style={{ padding: 16, background: `linear-gradient(135deg, ${C.gold}, #D97706)`, borderRadius: 14, textAlign: "center" }}>
+                        <h3 style={{ fontSize: 11, fontWeight: 700, color: C.white, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
+                          {t.startup.nextStep}
+                        </h3>
+                        <p style={{ fontSize: 14, color: C.white, fontWeight: 600 }}>"{startupResult.nextStep}"</p>
+                      </div>
+
+                      <Btn outline onClick={() => { setStartupResult(null); setStartupIdea(""); }}>
+                        ← {t.startup.validate.split("→")[0].trim()}
+                      </Btn>
+                    </>
+                  )}
+                </div>
+              </Card>
+              <div style={{ display: "flex", gap: 12 }}>
+                <Btn outline onClick={() => setStep(5)}>{t.back}</Btn>
+                <Btn onClick={() => setStep(7)} full>{t.next}</Btn>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ── Step 7: Roadmap ── */}
+          {step === 7 && (
             <motion.div key="roadmap" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <Card>
                 <div style={{ padding: "18px 22px", background: `linear-gradient(135deg, ${C.navy}, #2A4080)`, color: C.white }}>
@@ -753,6 +1117,93 @@ export default function VidyaAI() {
                   {t.roadmap.restart}
                 </Btn>
               </div>
+
+              {/* Resume Generation Section */}
+              <div style={{ marginTop: 16 }}>
+                {!resumeData ? (
+                  <Btn onClick={handleGenerateResume} disabled={loadingResume} full style={{ background: C.navy }}>
+                    {loadingResume ? t.resume.generating : t.roadmap.generateResume}
+                  </Btn>
+                ) : (
+                  <Card style={{ marginTop: 16 }}>
+                    <div style={{ padding: "18px 22px", background: C.navy, color: C.white }}>
+                      <h2 style={{ fontSize: 18, fontWeight: 800 }}>📄 {t.resume.title}</h2>
+                    </div>
+                    <div style={{ padding: 32, background: C.white }}>
+                      {/* Name Header */}
+                      <div style={{ marginBottom: 24, borderBottom: `2px solid ${C.navy}`, paddingBottom: 12 }}>
+                        <h1 style={{ fontSize: 28, fontWeight: 900, color: C.navy, marginBottom: 4 }}>{profile.name}</h1>
+                        <p style={{ fontSize: 14, color: C.slate }}>{profile.village} | {profile.goal}</p>
+                      </div>
+
+                      {/* Objective */}
+                      <div style={{ marginBottom: 20 }}>
+                        <h3 style={{ fontSize: 13, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
+                          {t.resume.objective}
+                        </h3>
+                        <p style={{ fontSize: 14, color: "#2D3748", lineHeight: 1.6 }}>{resumeData.objective}</p>
+                      </div>
+
+                      {/* Education */}
+                      <div style={{ marginBottom: 20 }}>
+                        <h3 style={{ fontSize: 13, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
+                          {t.resume.education}
+                        </h3>
+                        <p style={{ fontSize: 14, color: "#2D3748" }}>{resumeData.education}</p>
+                      </div>
+
+                      {/* Skills */}
+                      <div style={{ marginBottom: 20 }}>
+                        <h3 style={{ fontSize: 13, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                          {t.resume.skills}
+                        </h3>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                          {resumeData.skills.map((skill, i) => (
+                            <Badge key={i} text={skill} color={C.navy} bg={C.navyLight} />
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Projects */}
+                      <div style={{ marginBottom: 20 }}>
+                        <h3 style={{ fontSize: 13, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                          {t.resume.projects}
+                        </h3>
+                        <ul style={{ paddingLeft: 20, margin: 0 }}>
+                          {resumeData.projects.map((project, i) => (
+                            <li key={i} style={{ fontSize: 14, color: "#2D3748", marginBottom: 6, lineHeight: 1.6 }}>{project}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Certifications */}
+                      <div style={{ marginBottom: 20 }}>
+                        <h3 style={{ fontSize: 13, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                          {t.resume.certifications}
+                        </h3>
+                        <ul style={{ paddingLeft: 20, margin: 0 }}>
+                          {resumeData.certifications.map((cert, i) => (
+                            <li key={i} style={{ fontSize: 14, color: "#2D3748", marginBottom: 6 }}>{cert}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Languages */}
+                      <div style={{ marginBottom: 20 }}>
+                        <h3 style={{ fontSize: 13, fontWeight: 700, color: C.navy, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
+                          {t.resume.languages}
+                        </h3>
+                        <p style={{ fontSize: 14, color: "#2D3748" }}>{resumeData.languages.join(", ")}</p>
+                      </div>
+
+                      {/* Copy Button */}
+                      <Btn onClick={copyResumeToClipboard} full style={{ background: C.saffron }}>
+                        {copiedResume ? t.resume.copied : t.resume.copy}
+                      </Btn>
+                    </div>
+                  </Card>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -765,7 +1216,7 @@ export default function VidyaAI() {
         display: "flex", justifyContent: "space-around", alignItems: "center",
         padding: "10px 0 14px",
       }}>
-        {[["0", "👤", "Profile"], ["2", "✨", "Guidance"], ["3", "📚", "Courses"], ["4", "🏛️", "Scholar"], ["5", "🚀", "Intern"]].map(([s, icon, label]) => (
+        {[["0", "👤", "Profile"], ["2", "✨", "Guidance"], ["3", "📚", "Courses"], ["4", "🏛️", "Scholar"], ["5", "🚀", "Intern"], ["6", "💡", "Startup"]].map(([s, icon, label]) => (
           <button key={s} onClick={() => { if (parseInt(s) <= step || (parseInt(s) === 2 && aiResult)) setStep(parseInt(s)); }}
             style={{
               display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
